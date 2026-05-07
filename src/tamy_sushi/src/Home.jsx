@@ -138,7 +138,7 @@ export default function Home() {
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           <span style={{ fontSize: 28 }}>🌿</span>
           <span style={{ fontFamily: "'Lora', serif", fontWeight: 700, fontSize: 22, color: "#2D4A22", letterSpacing: -0.5 }}>
-            La Despensa
+            TonyRolls
           </span>
         </div>
 
@@ -380,10 +380,10 @@ export default function Home() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
               <span style={{ fontSize: 24 }}>🌿</span>
-              <span style={{ fontFamily: "'Lora', serif", fontWeight: 700, fontSize: 20 }}>La Despensa</span>
+              <span style={{ fontFamily: "'Lora', serif", fontWeight: 700, fontSize: 20 }}>TonyRolls</span>
             </div>
             <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 14, lineHeight: 1.7 }}>
-              Productos artesanales y orgánicos, directos del productor a tu mesa.
+              CoM3 RoLLs :) es tu tienda online de productos gourmet artesanales. Conecta con productores locales y disfruta de lo mejor de la gastronomía en tu hogar.
             </p>
           </div>
           {[
@@ -402,7 +402,7 @@ export default function Home() {
           ))}
         </div>
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: 24, textAlign: "center", color: "rgba(255,255,255,0.4)", fontSize: 13 }}>
-          © 2025 La Despensa · Todos los derechos reservados
+          © 2026 TonyRolls · Todos los derechos reservados
         </div>
       </footer>
 

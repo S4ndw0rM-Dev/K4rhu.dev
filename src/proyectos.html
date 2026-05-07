@@ -1,70 +1,77 @@
 <!DOCTYPE html>
 <html lang="es">
-    <!-- ############################# HEAD ###################################-->
-    <head>
-        <meta charset="UTF-8">
-        <title>K4rhu.dev</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../css/style.css">
-    </head>
-    <!-- ############################ BODY ####################################-->
-    <body class="proyectos-page">
-        <!-- #### HEADER ####-->
-        <header class="site-header">
-            <div class="container header-inner">
-                <span class="brand-text">K4RHU.DEV</span>
-            </div>
-            <a href="../index.html" class="brand brand--glow logo-float">
-                <img src="../assets/img/Index/karhu-logo.png" alt="Logo K4rhu" class="brand-logo">                    
-            </a>            
-        </header>
-        <!-- #### MAIN ####-->
-        <main>
-            <section class="proyectos-hero">
-              <div class="proyectos-content">
-                <h1 class="glitch" data-text="Proyectos.">
-                  Pro<span class="accent">yec</span>tos.
-                </h1>            
-                <p>
-                  Aquí encontrarás mis proyectos personales: ideas random, pruebas, scripts y experimentos que hago por gusto, curiosidad o aburrimiento creativo. No son trabajos formales, pero sí parte real de mi proceso, mis aprendizajes y mis locuras técnicas. Todo lo que voy rom… digo, aprendiendo en el camino de un hacker legal y muy curioso.
-                </p>
-                <a href="../index.html" class="btn-ghost">← Volver al inicio</a>
-              </div>
-          
-              <div class="proyectos-oso">
-                <img src="../assets/img/Index/proyectos.png" alt="Oso K4rhu" class="brand-logo-p">
-              </div>
-            </section>           
+<!-- ############################# HEAD ###################################-->
 
-            <!-- Grid de tarjetas -->
-            <div class="carder-grid">
-              <article class="carder">
-                <h3>Futuro TamiSushi</h3>
-                <p>Prototipo de e-commerce basado en React y Laravel</p>
-                <a href="./la-despensa/dist/index.html">Ir Al sitio →</a>
-              </article>
-          
-              <article class="carder">
-                <h3>Lumita IA</h3>
-                <p>Proyecto de IA local usando Ollama y Lumita como asistente.</p>
-                <a href="proyectos/lumita-log000.html">Ver bitácora →</a>
-              </article>
-          
-              <article class="carder">
-                <h3>Playground de Redes</h3>
-                <p>Packet Tracer, topologías, VLANs, routing, troubleshooting.</p>
-                <a href="proyectos/redes-playground.html">Abrir laboratorio →</a>
-              </article>
-            </div>
-        </main>
-        <!-- #### FOOTER #### -->
-        <footer>
-            <p>Página creada en <span class="accent">HTML 5</span>,<span class="accent"> CSS 3</span> y <span class="accent"> JavaScript</span>. © <span id="year"></span><span class="accent"> K4rhu</span>. All rights reserved.</p>
-        </footer>
-        <!--FECHA-->
-        <script>
-            const yearSpan = document.getElementById('year');
-            yearSpan.textContent = new Date().getFullYear();
-        </script>
-    </body>
+<head>
+  <meta charset="UTF-8">
+  <title>K4rhu.dev</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<!-- ############################ BODY ####################################-->
+
+<body class="proyectos-page">
+  <!-- #### HEADER ####-->
+  <header class="site-header">
+    <div class="container header-inner">
+      <span class="brand-text">K4RHU.DEV</span>
+    </div>
+    <a href="../index.html" class="brand brand--glow logo-float">
+      <img src="../assets/img/Index/karhu-logo.png" alt="Logo K4rhu" class="brand-logo">
+    </a>
+  </header>
+  <!-- #### MAIN ####-->
+  <main>
+    <section class="proyectos-hero">
+      <div class="proyectos-content">
+        <h1 class="glitch" data-text="Proyectos.">
+          Pro<span class="accent">yec</span>tos.
+        </h1>
+        <p>
+          Aquí encontrarás mis proyectos personales: ideas random, pruebas, scripts y experimentos que hago por gusto,
+          curiosidad o aburrimiento creativo. No son trabajos formales, pero sí parte real de mi proceso, mis
+          aprendizajes y mis locuras técnicas. Todo lo que voy rom… digo, aprendiendo en el camino de un hacker legal y
+          muy curioso.
+        </p>
+        <a href="../index.html" class="btn-ghost">← Volver al inicio</a>
+      </div>
+
+      <div class="proyectos-oso">
+        <img src="../assets/img/Index/proyectos.png" alt="Oso K4rhu" class="brand-logo-p">
+      </div>
+    </section>
+
+    <!-- Grid de tarjetas -->
+    <div class="carder-grid">
+      <article class="carder">
+        <h3>Proyecto TamiSushi</h3>
+        <p>Prototipo de e-commerce basado en React y Laravel</p>
+        <a href="./tamy_sushi/dist/index.html">Ir Al sitio →</a>
+      </article>
+
+      <article class="carder">
+        <h3>Lumita IA</h3>
+        <p>Proyecto de IA local usando Ollama y Lumita como asistente.</p>
+        <a href="proyectos/lumita-log000.html">Ver bitácora →</a>
+      </article>
+
+      <article class="carder">
+        <h3>Playground de Redes</h3>
+        <p>Packet Tracer, topologías, VLANs, routing, troubleshooting.</p>
+        <a href="proyectos/redes-playground.html">Abrir laboratorio →</a>
+      </article>
+    </div>
+  </main>
+  <!-- #### FOOTER #### -->
+  <footer>
+    <p>Página creada en <span class="accent">HTML 5</span>,<span class="accent"> CSS 3</span> y <span class="accent">
+        JavaScript</span>. © <span id="year"></span><span class="accent"> K4rhu</span>. All rights reserved.</p>
+  </footer>
+  <!--FECHA-->
+  <script>
+    const yearSpan = document.getElementById('year');
+    yearSpan.textContent = new Date().getFullYear();
+  </script>
+</body>
+
 </html>
