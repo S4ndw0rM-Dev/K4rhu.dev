@@ -1,0 +1,425 @@
+---
+// InnovaBot — Asistente IA de Innovaconta
+---
+
+<!-- Widget flotante -->
+<div id="cb-widget" class="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+
+  <!-- Ventana de chat -->
+  <div
+    id="cb-window"
+    class="hidden w-[360px] bg-slate-900 border border-slate-700/60 rounded-2xl shadow-2xl overflow-hidden"
+    style="max-height: 570px;"
+  >
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-indigo-600 to-violet-600 px-4 py-3 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl select-none">🤖</div>
+      <div class="flex-1 min-w-0">
+        <p class="font-semibold text-white text-sm leading-tight">InnovaBot</p>
+        <p class="text-xs text-indigo-200 flex items-center gap-1.5 mt-0.5">
+          <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full inline-block animate-pulse"></span>
+          Asistente IA · en línea
+        </p>
+      </div>
+      <button id="cb-close" class="text-white/60 hover:text-white transition-colors p-1" aria-label="Cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mensajes -->
+    <div id="cb-messages" class="p-4 overflow-y-auto flex flex-col gap-3" style="height:340px;"></div>
+
+    <!-- Quick replies -->
+    <div id="cb-qr" class="px-4 pb-2 flex flex-wrap gap-2 min-h-0"></div>
+
+    <!-- Input -->
+    <div class="px-4 pb-4 pt-2 border-t border-slate-700/50 flex gap-2">
+      <input
+        id="cb-input"
+        type="text"
+        placeholder="Escribe tu pregunta..."
+        class="flex-1 bg-slate-800 border border-slate-600/80 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:border-indigo-500 transition-colors"
+      />
+      <button
+        id="cb-send"
+        class="w-9 h-9 bg-indigo-600 hover:bg-indigo-500 rounded-xl flex items-center justify-center transition-colors flex-shrink-0"
+        aria-label="Enviar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 9L11 13"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Botón toggle -->
+  <div class="relative">
+    <!-- Anillo pulsante -->
+    <span id="cb-ring" class="absolute inset-0 rounded-full bg-indigo-500/40 animate-ping"></span>
+    <button
+      id="cb-toggle"
+      class="relative w-14 h-14 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-full shadow-xl glow-indigo flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
+      aria-label="Abrir InnovaBot"
+    >
+      <span id="cb-icon-open" class="text-2xl select-none">🤖</span>
+      <span id="cb-icon-close" class="text-lg text-white hidden select-none font-bold">✕</span>
+    </button>
+    <!-- Badge -->
+    <span id="cb-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full text-[10px] font-bold text-white flex items-center justify-center shadow-md">1</span>
+  </div>
+</div>
+
+<script is:inline>
+(function () {
+  /* ─── Base de conocimiento ─── */
+  const KB = [
+    {
+      id: 'greeting',
+      p: ['hola', 'hello', 'buenas', 'buenos dias', 'buenas tardes', 'buenas noches', 'saludos', 'hey'],
+      r: '¡Hola! 👋 Soy **InnovaBot**, tu asistente de contabilidad con IA.\n\nEstoy aquí para explicarte cualquier concepto contable y ayudarte a usar Innovaconta. ¿En qué puedo ayudarte hoy?',
+      qr: ['¿Qué es el debe y haber?', '¿Qué es el balance general?', '¿Cómo funciona Innovaconta?']
+    },
+    {
+      id: 'debeHaber',
+      p: ['debe', 'haber', 'debito', 'credito', 'partida doble'],
+      r: '**Debe y Haber** son los dos lados de cada cuenta contable:\n\n• **Debe (izquierda):** Entradas a activos y gastos\n• **Haber (derecha):** Entradas a pasivos, patrimonio e ingresos\n\nLa **Partida Doble** garantiza que en cada asiento:\n✅ Total Debe = Total Haber\n\nEs el fundamento de la contabilidad moderna, creado por Luca Pacioli en 1494.',
+      qr: ['¿Qué es un asiento contable?', '¿Qué es el libro mayor?', '¿Qué es el plan de cuentas?']
+    },
+    {
+      id: 'balance',
+      p: ['balance general', 'estado de situacion', 'situacion financiera', 'balance'],
+      r: '**El Balance General** muestra la posición financiera de la empresa en un momento dado.\n\n📐 **Ecuación fundamental:**\n**Activo = Pasivo + Patrimonio**\n\n🔵 **Activos:** Lo que posee la empresa\n🔴 **Pasivos:** Las deudas con terceros\n🟢 **Patrimonio:** El interés de los dueños\n\n¡Siempre debe estar perfectamente equilibrado!',
+      qr: ['¿Qué son los activos?', '¿Qué son los pasivos?', '¿Qué es el patrimonio?']
+    },
+    {
+      id: 'activos',
+      p: ['activo', 'activos', 'activo corriente', 'activo no corriente', 'bienes'],
+      r: '**Los Activos** son todos los recursos que posee la empresa.\n\n📦 **Activos Corrientes** (< 1 año):\n  • Caja y Bancos 💵\n  • Cuentas por Cobrar\n  • Inventarios\n\n🏭 **Activos No Corrientes** (> 1 año):\n  • Propiedades, Planta y Equipo (PP&E)\n  • Activos Intangibles\n  • Inversiones a largo plazo',
+      qr: ['¿Qué es la depreciación?', '¿Qué son los pasivos?']
+    },
+    {
+      id: 'pasivos',
+      p: ['pasivo', 'pasivos', 'deuda', 'obligaciones', 'pasivo corriente'],
+      r: '**Los Pasivos** son las deudas y obligaciones de la empresa con terceros.\n\n⚡ **Pasivos Corrientes** (< 1 año):\n  • Cuentas por Pagar\n  • IVA por Pagar\n  • Remuneraciones por Pagar\n\n🏦 **Pasivos No Corrientes** (> 1 año):\n  • Préstamos bancarios LP\n  • Bonos emitidos',
+      qr: ['¿Qué es el patrimonio?', '¿Qué es el IVA?']
+    },
+    {
+      id: 'patrimonio',
+      p: ['patrimonio', 'capital', 'capital propio', 'equity', 'capital pagado'],
+      r: '**El Patrimonio** (o Capital Propio) es el interés de los dueños en la empresa.\n\n**Patrimonio = Activos − Pasivos**\n\nComponentes:\n💰 **Capital Pagado:** Aportes de los socios\n📈 **Utilidades Retenidas:** Ganancias acumuladas no distribuidas\n📊 **Resultado del Ejercicio:** Ganancia/pérdida del período actual',
+      qr: ['¿Qué es el estado de resultados?', '¿Qué son los dividendos?']
+    },
+    {
+      id: 'estadoResultados',
+      p: ['estado de resultado', 'perdidas y ganancias', 'p&g', 'utilidad', 'resultado del ejercicio', 'estado financiero'],
+      r: '**El Estado de Resultados** muestra el rendimiento financiero durante un período.\n\nEstructura:\nIngresos por Ventas\n➖ Costo de Ventas\n= **Utilidad Bruta**\n➖ Gastos Operacionales\n= **Utilidad Operacional (EBIT)**\n➖ Gastos Financieros\n= **Utilidad Antes de Impuestos**\n➖ Impuesto a la Renta (27% en Chile)\n= **Utilidad Neta** 🎯',
+      qr: ['¿Qué es el flujo de caja?', '¿Qué es el EBIT?']
+    },
+    {
+      id: 'flujoCaja',
+      p: ['flujo de caja', 'cash flow', 'flujo de efectivo', 'liquidez'],
+      r: '**El Flujo de Caja** muestra los movimientos reales de efectivo.\n\n💼 **Operación:** Cobros y pagos del giro del negocio\n🏗️ **Inversión:** Compra/venta de activos fijos\n🏦 **Financiamiento:** Préstamos, aportes, dividendos\n\n⚠️ **¡Clave!** Una empresa puede tener utilidades pero problemas de liquidez si sus clientes no pagan a tiempo. El flujo de caja revela la realidad del efectivo.',
+      qr: ['¿Qué es el capital de trabajo?', '¿Qué es la liquidez corriente?']
+    },
+    {
+      id: 'factura',
+      p: ['factura', 'boleta', 'dte', 'documento tributario', 'nota de credito', 'nota de debito'],
+      r: '**DTE (Documentos Tributarios Electrónicos)** en Chile:\n\n🧾 **Factura Afecta:** Con IVA (19%)\n📄 **Factura Exenta:** Sin IVA\n🎫 **Boleta:** Para consumidores finales\n📝 **Nota de Crédito:** Anula o reduce una factura\n📋 **Nota de Débito:** Aumenta el monto de una factura\n\nEn Innovaconta los registras en el **Módulo de Facturas** y el asiento contable se genera automáticamente. ✨',
+      qr: ['¿Cómo registro una factura?', '¿Qué es el IVA?', '¿Qué es el SII?']
+    },
+    {
+      id: 'iva',
+      p: ['iva', 'impuesto al valor', 'impuesto agregado', 'debito fiscal', 'credito fiscal'],
+      r: '**IVA (Impuesto al Valor Agregado)** en Chile = **19%**\n\n🔵 **IVA Débito Fiscal:** El que cobras a tus clientes (ventas)\n🔴 **IVA Crédito Fiscal:** El que pagas a tus proveedores (compras)\n\n📅 **F29 mensual al SII:**\n• Débito > Crédito → Pagas la diferencia al SII\n• Crédito > Débito → Remanente para el próximo mes\n\nInnovaconta calcula tu IVA mensual automáticamente. ✅',
+      qr: ['¿Qué es el SII?', '¿Qué es el F29?']
+    },
+    {
+      id: 'sii',
+      p: ['sii', 'servicio de impuestos', 'impuestos internos', 'f29', 'f22', 'declaracion de renta'],
+      r: '**SII (Servicio de Impuestos Internos)** fiscaliza la tributación en Chile.\n\n📅 Obligaciones principales:\n• **F29 mensual:** IVA e impuesto de 2ª categoría\n• **F22 anual:** Declaración de Renta (27% empresas)\n• **Libros electrónicos:** Compras y ventas\n• **DTE:** Facturación electrónica obligatoria\n\nInnovaconta mantiene todos tus registros listos para el SII y te envía recordatorios de vencimientos. 🔔',
+      qr: ['¿Qué es el IVA?', '¿Cuándo debo declarar?']
+    },
+    {
+      id: 'asiento',
+      p: ['asiento contable', 'asiento', 'registro contable', 'comprobante contable', 'diario'],
+      r: '**Un Asiento Contable** registra una transacción con la partida doble.\n\nEjemplo — Venta al contado $100.000 + IVA:\n\nDebe → Caja: $119.000\nHaber → Ventas: $100.000\nHaber → IVA Débito: $19.000\n\n✅ Debe ($119.000) = Haber ($119.000)\n\nEn Innovaconta los asientos se generan **automáticamente** al registrar una factura o transacción.',
+      qr: ['¿Qué es el libro mayor?', '¿Cómo creo un asiento?']
+    },
+    {
+      id: 'libroMayor',
+      p: ['libro mayor', 'mayor', 'libro diario', 'libro de contabilidad', 'libro auxiliar'],
+      r: '**El Libro Mayor** agrupa todos los movimientos de cada cuenta contable por separado.\n\n📊 Columnas: Fecha · Descripción · Debe · Haber · Saldo\n\nEn Chile los libros de contabilidad deben conservarse por **6 años** según el Código Tributario.\n\nInnovaconta mantiene el Libro Mayor actualizado en tiempo real con cada transacción registrada. 📚',
+      qr: ['¿Qué es el balance de comprobación?', '¿Qué es el plan de cuentas?']
+    },
+    {
+      id: 'depreciacion',
+      p: ['depreciacion', 'depreciacion', 'amortizacion', 'vida util', 'activo fijo', 'propiedad planta'],
+      r: '**La Depreciación** distribuye el costo de un activo a lo largo de su vida útil.\n\n📉 **Método Línea Recta:**\nDepreciación anual = Costo ÷ Vida útil\n\n🔢 Ejemplo: Computador $600.000 / 3 años = $200.000/año\nAsiento mensual: Gasto Dep. $16.667 | Dep. Acumulada $16.667\n\n⚠️ El SII tiene tablas de vida útil que deben respetarse tributariamente.',
+      qr: ['¿Qué son los activos fijos?', '¿Qué son las NIIF?']
+    },
+    {
+      id: 'ifrs',
+      p: ['ifrs', 'niif', 'normas internacionales', 'nic', 'iasb'],
+      r: '**NIIF/IFRS** son los estándares contables globales emitidos por el IASB.\n\nEn Chile:\n🏢 **Empresas grandes/cotizadas:** IFRS plenas obligatorias\n🏪 **PYMES:** IFRS para PYMES\n🏠 **Pequeñas:** Normas tributarias\n\nDiferencias clave:\n• Valoración a valor razonable\n• NIIF 15 (reconocimiento de ingresos)\n• NIIF 16 (arrendamientos en el balance)\n\nInnovaconta es compatible con IFRS plenas e IFRS para PYMES. 🌍',
+      qr: ['¿Qué es el valor razonable?', '¿Qué es la NIIF 15?']
+    },
+    {
+      id: 'ratios',
+      p: ['ratio', 'indicador financiero', 'razon financiera', 'liquidez corriente', 'endeudamiento', 'rentabilidad', 'roe', 'roa', 'margen'],
+      r: '**Ratios Financieros** clave:\n\n📊 **Liquidez:**\n• Liquidez Corriente = Activo Cte ÷ Pasivo Cte (ideal: 1.5–2.0)\n• Prueba Ácida = (Activo Cte − Inventarios) ÷ Pasivo Cte\n\n💪 **Endeudamiento:**\n• Razón de Deuda = Pasivo Total ÷ Activo Total (ideal: < 0.5)\n\n💰 **Rentabilidad:**\n• ROE = Utilidad Neta ÷ Patrimonio\n• ROA = Utilidad Neta ÷ Activos\n• Margen Neto = Utilidad Neta ÷ Ventas',
+      qr: ['¿Cómo mejoro mi liquidez?', '¿Qué es el estado de resultados?']
+    },
+    {
+      id: 'capitalTrabajo',
+      p: ['capital de trabajo', 'capital circulante', 'working capital'],
+      r: '**Capital de Trabajo** = Activo Corriente − Pasivo Corriente\n\nMide la capacidad de pagar obligaciones a corto plazo.\n\n✅ Positivo → buena salud financiera\n⚠️ Negativo → riesgo de iliquidez\n🎯 Ratio corriente ideal: entre 1.5 y 2.0\n\nInnovaconta monitorea tu capital de trabajo en tiempo real y te alerta si hay riesgos. 🚨',
+      qr: ['¿Qué son los ratios financieros?']
+    },
+    {
+      id: 'conciliacion',
+      p: ['conciliacion', 'conciliacion bancaria', 'banco', 'estado de cuenta'],
+      r: '**La Conciliación Bancaria** compara tu saldo contable con el estado de cuenta del banco.\n\nDiferencias comunes:\n• Cheques emitidos y no cobrados\n• Depósitos en tránsito\n• Cargos bancarios no registrados\n\n🤖 Innovaconta automatiza la conciliación descargando movimientos bancarios directamente y cruzándolos con tus asientos. ¡Ahorra horas de trabajo! ⏰',
+      qr: ['¿Qué es el libro mayor?', '¿Qué es la caja?']
+    },
+    {
+      id: 'howToUse',
+      p: ['como funciona', 'como usar', 'que puedo hacer', 'para que sirve', 'modulos'],
+      r: '**Innovaconta** — Módulos disponibles:\n\n📊 **Dashboard:** Resumen financiero en tiempo real\n🧾 **Facturas:** Gestión de DTE, compras y ventas\n📚 **Libro Mayor:** Movimientos por cuenta contable\n⚖️ **Balance General:** Situación financiera actualizada\n📝 **Asientos:** Registra transacciones manualmente\n📈 **Informes:** EE.RR., Flujo de Caja y Ratios\n\n¿Quieres que te explique algún módulo específico?',
+      qr: ['¿Cómo registro una factura?', '¿Cómo creo un asiento?', '¿Qué son los ratios?']
+    },
+    {
+      id: 'whyAI',
+      p: ['inteligencia artificial', 'ia', 'ai', 'por que ia', 'beneficio', 'ventaja de la ia'],
+      r: '🤖 **¿Por qué Innovaconta usa Inteligencia Artificial?**\n\n⚡ **Automatización:**\n  • Clasificación automática de transacciones\n  • Generación de asientos contables\n  • Conciliación bancaria automática\n\n🔍 **Detección inteligente:**\n  • Errores y anomalías en registros\n  • Alertas de vencimientos tributarios\n\n📊 **Análisis predictivo:**\n  • Proyección de flujo de caja\n  • Recomendaciones financieras\n\nLa IA no reemplaza al contador ¡lo potencia! 🚀',
+      qr: ['¿Es seguro?', '¿Cómo funciona Innovaconta?']
+    },
+    {
+      id: 'howRegisterInvoice',
+      p: ['registrar factura', 'registro factura', 'nueva factura', 'agregar factura', 'como ingreso'],
+      r: '**Cómo registrar una factura en Innovaconta:**\n\n1️⃣ Ve al **Módulo de Facturas** en el menú lateral\n2️⃣ Haz clic en **"+ Nueva Factura"**\n3️⃣ Completa los datos:\n   • RUT emisor/receptor\n   • Folio y N° de factura\n   • Fecha de emisión y vencimiento\n   • Monto neto (el IVA se calcula solo ✨)\n4️⃣ Haz clic en **"Guardar"**\n\nInnovaconta genera el asiento contable automáticamente y actualiza tus libros.',
+      qr: ['¿Qué es el IVA?', '¿Qué es un asiento contable?']
+    },
+    {
+      id: 'howCreateEntry',
+      p: ['crear asiento', 'como creo un asiento', 'nuevo asiento', 'ingresar asiento'],
+      r: '**Cómo crear un asiento contable:**\n\n1️⃣ Ve a **Asientos Contables** en el menú\n2️⃣ Haz clic en **"+ Nuevo Asiento"**\n3️⃣ Agrega las líneas de debe y haber\n4️⃣ Innovaconta valida que **Debe = Haber** antes de guardar\n5️⃣ Haz clic en **"Guardar Asiento"**\n\n💡 Si Debe ≠ Haber el sistema no te dejará guardar (partida doble obligatoria).',
+      qr: ['¿Qué es la partida doble?', '¿Qué es el debe y haber?']
+    },
+    {
+      id: 'thanks',
+      p: ['gracias', 'muchas gracias', 'perfecto', 'entendi', 'ok gracias', 'listo', 'excelente', 'genial', 'super'],
+      r: '¡De nada! 😊 Estoy disponible 24/7 para cualquier duda contable. ¿Hay algo más que quieras saber?',
+      qr: ['¿Qué es el balance general?', '¿Qué es el IVA?', '¿Cómo funciona Innovaconta?']
+    },
+    // Contextos del dashboard (disparados por eventos)
+    {
+      id: 'ctx_dashboard',
+      p: ['__ctx_dashboard__'],
+      r: '📊 ¡Bienvenido al **Dashboard**! Aquí tienes el resumen financiero completo de **Comercial El Sol SpA**.\n\nPuedes ver:\n• KPIs del mes: ingresos, gastos y utilidad\n• Gráfico comparativo mensual\n• Últimas transacciones\n\n¿Quieres que te explique algún indicador?',
+      qr: ['¿Qué son los KPIs?', '¿Qué son los ratios?', '¿Qué es el flujo de caja?']
+    },
+    {
+      id: 'ctx_facturas',
+      p: ['__ctx_facturas__'],
+      r: '🧾 Estás en el **Módulo de Facturas**.\n\nAquí gestionas todos tus documentos tributarios:\n• **Facturas de Venta:** Las que emites a clientes\n• **Facturas de Compra:** Las que recibes de proveedores\n• **Estados:** Pagada ✅, Pendiente ⏳, Vencida 🔴\n\n💡 Las facturas vencidas afectan tu flujo de caja. Innovaconta te notifica automáticamente antes de cada vencimiento.',
+      qr: ['¿Cómo registro una factura?', '¿Qué es el IVA?', '¿Qué es una nota de crédito?']
+    },
+    {
+      id: 'ctx_libro',
+      p: ['__ctx_libro__'],
+      r: '📚 Estás en el **Libro Mayor**.\n\nAquí ves todos los movimientos de cada cuenta contable:\n• Selecciona una cuenta en el desplegable\n• Verás fecha, descripción, debe, haber y saldo acumulado\n• El saldo final muestra la posición actual de la cuenta\n\nLa columna "Saldo" se actualiza con cada movimiento en tiempo real.',
+      qr: ['¿Cómo leer el libro mayor?', '¿Qué es el debe y haber?', '¿Qué es una cuenta contable?']
+    },
+    {
+      id: 'ctx_balance',
+      p: ['__ctx_balance__'],
+      r: '⚖️ Estás en el **Balance General** de Comercial El Sol SpA (al 31/05/2026).\n\nResumen:\n🔵 Activos totales: **$19.790.000**\n🔴 Pasivos totales: **$8.250.000**\n🟢 Patrimonio: **$11.540.000**\n\n✅ Activos = Pasivos + Patrimonio → ¡Está balanceado!\n\nLa liquidez corriente es de 4.7 — excelente posición a corto plazo.',
+      qr: ['¿Qué son los activos?', '¿Qué es el patrimonio?', '¿Qué es la liquidez corriente?']
+    },
+    {
+      id: 'ctx_asientos',
+      p: ['__ctx_asientos__'],
+      r: '📝 Estás en **Asientos Contables**.\n\nAquí registras transacciones manualmente:\n\n💡 Recuerda al crear un asiento:\n• **Debe = Haber** (partida doble obligatoria)\n• Usa las cuentas del plan de cuentas correcto\n• Agrega una descripción clara de la operación\n\nInnovaconta valida automáticamente que el asiento esté balanceado.',
+      qr: ['¿Cómo creo un asiento?', '¿Qué es la partida doble?', '¿Qué es el plan de cuentas?']
+    },
+    {
+      id: 'ctx_informes',
+      p: ['__ctx_informes__'],
+      r: '📈 Estás en **Informes Financieros**.\n\nDisponibles para el período:\n• **Estado de Resultados:** Utilidad neta del mes\n• **Ratios Financieros:** Indicadores clave de salud\n• **Análisis de Tendencias:** Comparativo 5 meses\n\n🤖 La IA analiza tus números y genera recomendaciones personalizadas para mejorar tu gestión financiera.',
+      qr: ['¿Qué son los ratios?', '¿Qué es el estado de resultados?', '¿Qué es el flujo de caja?']
+    }
+  ];
+
+  /* ─── Helpers ─── */
+  function norm(t) {
+    return t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').trim();
+  }
+
+  function md(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/_(.*?)_/g, '<em>$1</em>')
+      .replace(/\n/g, '<br>');
+  }
+
+  function findEntry(text) {
+    const n = norm(text);
+    for (const e of KB) {
+      for (const p of e.p) {
+        if (p.startsWith('__ctx_')) continue;
+        if (n.includes(norm(p))) return e;
+      }
+    }
+    return null;
+  }
+
+  function findCtx(section) {
+    return KB.find(e => e.p.includes(`__ctx_${section}__`)) || null;
+  }
+
+  /* ─── DOM refs ─── */
+  const widget   = document.getElementById('cb-widget');
+  const win      = document.getElementById('cb-window');
+  const msgs     = document.getElementById('cb-messages');
+  const qrBox    = document.getElementById('cb-qr');
+  const input    = document.getElementById('cb-input');
+  const sendBtn  = document.getElementById('cb-send');
+  const toggle   = document.getElementById('cb-toggle');
+  const closeBtn = document.getElementById('cb-close');
+  const badge    = document.getElementById('cb-badge');
+  const ring     = document.getElementById('cb-ring');
+  const iconOpen = document.getElementById('cb-icon-open');
+  const iconCls  = document.getElementById('cb-icon-close');
+
+  if (!widget || !win || !msgs) return;
+
+  /* ─── State ─── */
+  let isOpen = false;
+  let greeted = false;
+
+  /* ─── UI builders ─── */
+  function addMsg(text, from = 'bot') {
+    const wrap = document.createElement('div');
+    wrap.className = `flex ${from === 'bot' ? 'justify-start' : 'justify-end'} animate-fade-up`;
+
+    const bubble = document.createElement('div');
+    if (from === 'bot') {
+      bubble.className = 'max-w-[78%] bg-slate-800 text-slate-100 rounded-2xl rounded-tl-sm px-3 py-2.5 text-[13px] leading-relaxed bot-message';
+      bubble.innerHTML = md(text);
+    } else {
+      bubble.className = 'max-w-[78%] bg-indigo-600 text-white rounded-2xl rounded-tr-sm px-3 py-2.5 text-[13px]';
+      bubble.textContent = text;
+    }
+
+    wrap.appendChild(bubble);
+    msgs.appendChild(wrap);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showTyping() {
+    const d = document.createElement('div');
+    d.id = 'cb-typing';
+    d.className = 'flex justify-start animate-fade-up';
+    d.innerHTML = '<div class="bg-slate-800 rounded-2xl rounded-tl-sm px-4 py-3 flex items-center gap-1">' +
+      '<span class="typing-dot w-2 h-2 bg-slate-400 rounded-full"></span>' +
+      '<span class="typing-dot w-2 h-2 bg-slate-400 rounded-full"></span>' +
+      '<span class="typing-dot w-2 h-2 bg-slate-400 rounded-full"></span>' +
+      '</div>';
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('cb-typing');
+    if (t) t.remove();
+  }
+
+  function setQR(replies) {
+    qrBox.innerHTML = '';
+    (replies || []).forEach(r => {
+      const btn = document.createElement('button');
+      btn.textContent = r;
+      btn.className = 'text-[11px] bg-slate-800 hover:bg-indigo-600/30 border border-slate-600 hover:border-indigo-500 text-slate-300 hover:text-white rounded-full px-3 py-1.5 transition-all duration-200';
+      btn.onclick = () => handleMsg(r);
+      qrBox.appendChild(btn);
+    });
+  }
+
+  async function handleMsg(text) {
+    if (!text.trim()) return;
+    if (input) input.value = '';
+    addMsg(text, 'user');
+    setQR([]);
+    showTyping();
+
+    await new Promise(r => setTimeout(r, 700 + Math.random() * 500));
+    removeTyping();
+
+    const entry = findEntry(text);
+    if (entry) {
+      addMsg(entry.r, 'bot');
+      setQR(entry.qr);
+    } else {
+      addMsg('Hmm, no tengo respuesta específica para eso 🤔\n\nPuedo ayudarte con:\n• Conceptos contables (balance, asientos, IVA...)\n• Cómo usar los módulos de Innovaconta\n• Procedimientos tributarios en Chile\n\n¿Puedes reformular tu pregunta?', 'bot');
+      setQR(['¿Qué es el balance?', '¿Qué es el IVA?', '¿Cómo uso Innovaconta?']);
+    }
+  }
+
+  /* ─── Open / Close ─── */
+  function openChat() {
+    isOpen = true;
+    win.classList.remove('hidden');
+    win.classList.add('animate-slide-up');
+    iconOpen.classList.add('hidden');
+    iconCls.classList.remove('hidden');
+    badge.classList.add('hidden');
+    ring.classList.add('hidden');
+
+    if (!greeted) {
+      greeted = true;
+      setTimeout(() => {
+        addMsg('¡Hola! 👋 Soy **InnovaBot**, tu asistente de contabilidad con IA.\n\nEstoy aquí para explicarte conceptos contables y ayudarte a usar Innovaconta. ¿En qué puedo ayudarte?', 'bot');
+        setQR(['¿Qué es el balance general?', '¿Qué es el IVA?', '¿Cómo funciona Innovaconta?']);
+      }, 250);
+    }
+  }
+
+  function closeChat() {
+    isOpen = false;
+    win.classList.add('hidden');
+    iconOpen.classList.remove('hidden');
+    iconCls.classList.add('hidden');
+  }
+
+  /* ─── Events ─── */
+  toggle.addEventListener('click', () => isOpen ? closeChat() : openChat());
+  closeBtn.addEventListener('click', closeChat);
+  sendBtn.addEventListener('click', () => handleMsg(input.value));
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') handleMsg(input.value); });
+
+  // Escucha eventos de contexto del dashboard
+  window.addEventListener('innovabot:context', e => {
+    const section = e.detail && e.detail.section;
+    if (!section) return;
+    const entry = findCtx(section);
+    if (!entry) return;
+
+    if (isOpen) {
+      setTimeout(() => { addMsg(entry.r, 'bot'); setQR(entry.qr); }, 400);
+    } else {
+      badge.classList.remove('hidden');
+      ring.classList.remove('hidden');
+    }
+  });
+
+  // Mostrar badge después de 2 s si no se ha abierto aún
+  setTimeout(() => {
+    if (!greeted) {
+      badge.classList.remove('hidden');
+      ring.classList.remove('hidden');
+    }
+  }, 2000);
+})();
+</script>

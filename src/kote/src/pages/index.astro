@@ -1,0 +1,511 @@
+---
+import Layout from '../layouts/Layout.astro';
+import InnovaBot from '../components/InnovaBot.astro';
+---
+
+<Layout title="Inicio">
+  <!-- ── NAVBAR ── -->
+  <nav class="fixed top-0 inset-x-0 z-40 bg-slate-950/80 backdrop-blur border-b border-slate-800/60">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/innovaconta/" class="flex items-center gap-2.5 font-bold text-lg">
+        <span class="text-2xl">💼</span>
+        <span class="gradient-text">Innovaconta</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8 text-sm text-slate-300">
+        <a href="#features" class="hover:text-white transition-colors">Características</a>
+        <a href="#como-funciona" class="hover:text-white transition-colors">Cómo funciona</a>
+        <a href="#demo" class="hover:text-white transition-colors">Demo</a>
+        <a href="#testimonios" class="hover:text-white transition-colors">Testimonios</a>
+      </div>
+      <a
+        href="/innovaconta/dashboard"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold px-5 py-2 rounded-xl transition-colors shadow-lg shadow-indigo-600/25"
+      >
+        Abrir Demo →
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="relative min-h-screen flex items-center pt-16 overflow-hidden">
+    <!-- Fondo decorativo -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-indigo-950/40 to-slate-950 pointer-events-none"></div>
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-violet-600/10 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Grid sutil -->
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+         style="background-image: linear-gradient(#fff 1px,transparent 1px),linear-gradient(90deg,#fff 1px,transparent 1px); background-size: 60px 60px;"></div>
+
+    <div class="relative max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-16 items-center">
+      <!-- Texto -->
+      <div class="space-y-8">
+        <div class="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/30 rounded-full px-4 py-2 text-sm text-indigo-300">
+          <span class="w-1.5 h-1.5 bg-indigo-400 rounded-full animate-pulse"></span>
+          ✨ Innovación Contable con IA
+        </div>
+
+        <h1 class="text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
+          La Contabilidad del
+          <span class="gradient-text block">Futuro, Hoy</span>
+        </h1>
+
+        <p class="text-lg text-slate-400 leading-relaxed max-w-xl">
+          Innovaconta combina <strong class="text-white">Inteligencia Artificial</strong> con contabilidad profesional para hacer tu gestión financiera más simple, precisa y eficiente — con un asistente que te guía en cada paso.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <a
+            href="/innovaconta/dashboard"
+            class="group flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 shadow-xl shadow-indigo-600/30 hover:shadow-indigo-500/40 hover:-translate-y-0.5"
+          >
+            🚀 Ver Demo en vivo
+            <span class="group-hover:translate-x-1 transition-transform">→</span>
+          </a>
+          <a
+            href="#como-funciona"
+            class="flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 border border-slate-700"
+          >
+            Conocer más ↓
+          </a>
+        </div>
+
+        <!-- Badges de confianza -->
+        <div class="flex flex-wrap gap-6 pt-2">
+          <div class="flex items-center gap-2 text-sm text-slate-400">
+            <span class="text-emerald-400 text-lg">✅</span> Compatible con SII
+          </div>
+          <div class="flex items-center gap-2 text-sm text-slate-400">
+            <span class="text-emerald-400 text-lg">✅</span> IFRS / NIC
+          </div>
+          <div class="flex items-center gap-2 text-sm text-slate-400">
+            <span class="text-emerald-400 text-lg">✅</span> DTE Chile
+          </div>
+        </div>
+      </div>
+
+      <!-- Preview card del dashboard -->
+      <div class="animate-float lg:justify-self-end">
+        <div class="relative bg-slate-900 rounded-2xl p-5 border border-slate-700/60 shadow-2xl w-full max-w-md">
+          <!-- Header del preview -->
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <p class="text-sm font-semibold text-white">Dashboard Financiero</p>
+              <p class="text-xs text-slate-400">Comercial El Sol SpA · Mayo 2026</p>
+            </div>
+            <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1 rounded-full">● En línea</span>
+          </div>
+
+          <!-- KPI cards -->
+          <div class="grid grid-cols-2 gap-3 mb-4">
+            <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+              <p class="text-[10px] text-slate-400 uppercase tracking-wide">Ingresos</p>
+              <p class="text-xl font-bold text-emerald-400 mt-0.5">$3.2M</p>
+              <p class="text-[10px] text-emerald-400 mt-0.5">▲ +8.5% vs abril</p>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+              <p class="text-[10px] text-slate-400 uppercase tracking-wide">Gastos</p>
+              <p class="text-xl font-bold text-rose-400 mt-0.5">$2.48M</p>
+              <p class="text-[10px] text-rose-400 mt-0.5">▲ +3.1% vs abril</p>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+              <p class="text-[10px] text-slate-400 uppercase tracking-wide">Utilidad</p>
+              <p class="text-xl font-bold text-indigo-400 mt-0.5">$720K</p>
+              <p class="text-[10px] text-indigo-400 mt-0.5">▲ +15.2% vs abril</p>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50">
+              <p class="text-[10px] text-slate-400 uppercase tracking-wide">Pendientes</p>
+              <p class="text-xl font-bold text-amber-400 mt-0.5">3</p>
+              <p class="text-[10px] text-amber-400 mt-0.5">facturas por cobrar</p>
+            </div>
+          </div>
+
+          <!-- Mini chart (barras CSS) -->
+          <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/50 mb-3">
+            <p class="text-[10px] text-slate-400 uppercase tracking-wide mb-3">Ingresos vs Gastos 2026</p>
+            <div class="flex items-end gap-2 h-16">
+              {[
+                { ing: 70, gas: 52, label: 'Ene' },
+                { ing: 77, gas: 57, label: 'Feb' },
+                { ing: 73, gas: 59, label: 'Mar' },
+                { ing: 85, gas: 65, label: 'Abr' },
+                { ing: 80, gas: 62, label: 'May' },
+              ].map(m => (
+                <div class="flex-1 flex flex-col items-center gap-1">
+                  <div class="w-full flex items-end gap-0.5 justify-center" style={`height:${Math.max(m.ing, m.gas)}%`}>
+                    <div class="flex-1 bg-emerald-500/70 rounded-t-sm" style={`height:${m.ing}%`}></div>
+                    <div class="flex-1 bg-rose-500/60 rounded-t-sm" style={`height:${m.gas}%`}></div>
+                  </div>
+                  <p class="text-[8px] text-slate-500">{m.label}</p>
+                </div>
+              ))}
+            </div>
+            <div class="flex gap-4 mt-2">
+              <div class="flex items-center gap-1.5 text-[9px] text-slate-400">
+                <span class="w-2 h-2 bg-emerald-500/70 rounded-sm"></span> Ingresos
+              </div>
+              <div class="flex items-center gap-1.5 text-[9px] text-slate-400">
+                <span class="w-2 h-2 bg-rose-500/60 rounded-sm"></span> Gastos
+              </div>
+            </div>
+          </div>
+
+          <!-- InnovaBot indicator -->
+          <div class="flex items-center gap-2 bg-indigo-600/15 border border-indigo-500/30 rounded-xl px-3 py-2">
+            <span class="text-base">🤖</span>
+            <div>
+              <p class="text-[11px] font-medium text-indigo-300">InnovaBot activo</p>
+              <p class="text-[9px] text-slate-400">Tu asistente IA está listo para ayudarte</p>
+            </div>
+            <span class="ml-auto w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+          </div>
+        </div>
+
+        <!-- Badge flotante -->
+        <div class="absolute -top-3 -right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-lg shadow-emerald-500/30">
+          IA Activa ✓
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section id="features" class="py-24 bg-slate-900/50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="text-indigo-400 font-medium text-sm uppercase tracking-widest mb-3">Características</p>
+        <h2 class="text-4xl font-bold text-white mb-4">Todo lo que tu empresa necesita</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Innovaconta centraliza todas las operaciones contables en una sola plataforma, potenciada por inteligencia artificial.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          {
+            icon: '🤖',
+            title: 'InnovaBot IA',
+            desc: 'Asistente inteligente disponible 24/7 que explica conceptos contables, guía en cada trámite y responde tus preguntas en lenguaje natural.',
+            color: 'indigo',
+          },
+          {
+            icon: '📊',
+            title: 'Dashboard en tiempo real',
+            desc: 'Visualiza KPIs financieros, gráficos de ingresos vs gastos y el estado general de tu empresa actualizado en tiempo real.',
+            color: 'emerald',
+          },
+          {
+            icon: '🧾',
+            title: 'Gestión de Facturas DTE',
+            desc: 'Registra y gestiona facturas, boletas, notas de crédito y débito. Compatible con el sistema de facturación electrónica del SII.',
+            color: 'violet',
+          },
+          {
+            icon: '📚',
+            title: 'Libro Mayor automático',
+            desc: 'Los asientos contables se generan automáticamente al registrar transacciones. El Libro Mayor siempre está actualizado.',
+            color: 'cyan',
+          },
+          {
+            icon: '📈',
+            title: 'Informes financieros',
+            desc: 'Estado de Resultados, Balance General, Flujo de Caja y ratios financieros listos para presentar a socios, bancos o el SII.',
+            color: 'amber',
+          },
+          {
+            icon: '🔔',
+            title: 'Alertas tributarias',
+            desc: 'Recordatorios automáticos del F29, F22 y otras obligaciones tributarias. Nunca más te atrasarás con el SII.',
+            color: 'rose',
+          },
+        ].map(f => (
+          <div class={`group bg-slate-900 border border-slate-700/50 hover:border-${f.color}-500/50 rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}>
+            <div class={`w-12 h-12 rounded-xl bg-${f.color}-500/10 flex items-center justify-center text-2xl mb-4`}>
+              {f.icon}
+            </div>
+            <h3 class="font-bold text-white text-lg mb-2">{f.title}</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CÓMO FUNCIONA ── -->
+  <section id="como-funciona" class="py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="text-indigo-400 font-medium text-sm uppercase tracking-widest mb-3">Proceso</p>
+        <h2 class="text-4xl font-bold text-white mb-4">Contabilidad en 3 simples pasos</h2>
+        <p class="text-slate-400 max-w-2xl mx-auto">Innovaconta simplifica la gestión contable para que te enfoques en hacer crecer tu negocio.</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 relative">
+        <!-- Línea conectora (escritorio) -->
+        <div class="hidden md:block absolute top-16 left-1/6 right-1/6 h-0.5 bg-gradient-to-r from-indigo-600 via-violet-500 to-emerald-500"></div>
+
+        {[
+          {
+            n: '01',
+            icon: '📥',
+            title: 'Conecta tus datos',
+            desc: 'Importa tus documentos tributarios desde el SII o ingresa transacciones manualmente. Innovaconta soporta CSV, Excel y conexión directa con bancos.',
+          },
+          {
+            n: '02',
+            icon: '🧠',
+            title: 'La IA trabaja por ti',
+            desc: 'Innovaconta clasifica automáticamente las transacciones, genera los asientos contables y actualiza todos tus libros en tiempo real.',
+          },
+          {
+            n: '03',
+            icon: '🎯',
+            title: 'Toma decisiones informadas',
+            desc: 'Revisa tus informes financieros, consulta a InnovaBot y recibe recomendaciones personalizadas basadas en tus propios datos.',
+          },
+        ].map(step => (
+          <div class="relative flex flex-col items-center text-center gap-4">
+            <div class="relative">
+              <div class="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-indigo-600/40 z-10">
+                {step.n}
+              </div>
+            </div>
+            <div class="text-4xl">{step.icon}</div>
+            <h3 class="font-bold text-white text-xl">{step.title}</h3>
+            <p class="text-slate-400 text-sm leading-relaxed max-w-xs">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS ── -->
+  <section class="py-20 bg-gradient-to-r from-indigo-600 to-violet-600">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center text-white">
+        {[
+          { n: '99.9%', label: 'Precisión contable', sub: 'en registros automáticos' },
+          { n: '70%', label: 'Ahorro de tiempo', sub: 'en tareas administrativas' },
+          { n: '+500', label: 'Empresas', sub: 'confían en Innovaconta' },
+          { n: '24/7', label: 'InnovaBot activo', sub: 'siempre disponible' },
+        ].map(s => (
+          <div>
+            <p class="text-5xl font-black tracking-tight">{s.n}</p>
+            <p class="font-semibold text-indigo-100 mt-2">{s.label}</p>
+            <p class="text-indigo-200/70 text-sm mt-1">{s.sub}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEMO PREVIEW ── -->
+  <section id="demo" class="py-24 bg-slate-900/50">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-12">
+        <p class="text-indigo-400 font-medium text-sm uppercase tracking-widest mb-3">Demo interactiva</p>
+        <h2 class="text-4xl font-bold text-white mb-4">Pruébalo ahora mismo</h2>
+        <p class="text-slate-400 max-w-xl mx-auto">Explora el dashboard completo con datos reales de una empresa simulada. InnovaBot estará ahí para guiarte.</p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-700/50 rounded-3xl overflow-hidden shadow-2xl max-w-5xl mx-auto">
+        <!-- Barra de browser simulada -->
+        <div class="bg-slate-800 px-4 py-3 flex items-center gap-3 border-b border-slate-700/50">
+          <div class="flex gap-1.5">
+            <span class="w-3 h-3 bg-rose-500 rounded-full"></span>
+            <span class="w-3 h-3 bg-amber-400 rounded-full"></span>
+            <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+          </div>
+          <div class="flex-1 bg-slate-700/50 rounded-lg px-3 py-1 text-xs text-slate-400 text-center">
+            innovaconta.app/dashboard
+          </div>
+        </div>
+
+        <!-- Preview del dashboard (imagen simulada con HTML) -->
+        <div class="grid lg:grid-cols-[200px_1fr] divide-x divide-slate-700/50">
+          <!-- Sidebar preview -->
+          <div class="bg-[#1e293b] p-4 hidden lg:block">
+            <div class="flex items-center gap-2 mb-6 px-2">
+              <span class="text-xl">💼</span>
+              <span class="font-bold text-white text-sm gradient-text">Innovaconta</span>
+            </div>
+            {['📊 Dashboard', '🧾 Facturas', '📚 Libro Mayor', '⚖️ Balance', '📝 Asientos', '📈 Informes'].map((item, i) => (
+              <div class={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs mb-1 ${i === 0 ? 'bg-indigo-600 text-white font-medium' : 'text-slate-400'}`}>
+                {item}
+              </div>
+            ))}
+          </div>
+
+          <!-- Content preview -->
+          <div class="p-6 bg-slate-50">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h3 class="font-bold text-slate-800 text-sm">Dashboard</h3>
+                <p class="text-xs text-slate-500">Comercial El Sol SpA · Mayo 2026</p>
+              </div>
+              <span class="text-xs bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full font-medium">🤖 InnovaBot activo</span>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
+              {[
+                { label: 'Ingresos', val: '$3.200.000', color: 'emerald', up: '+8.5%' },
+                { label: 'Gastos', val: '$2.480.000', color: 'rose', up: '+3.1%' },
+                { label: 'Utilidad', val: '$720.000', color: 'indigo', up: '+15.2%' },
+                { label: 'Pendientes', val: '3 facturas', color: 'amber', up: 'por cobrar' },
+              ].map(k => (
+                <div class="bg-white rounded-xl p-3 border border-slate-200 shadow-sm">
+                  <p class="text-[10px] text-slate-500 uppercase tracking-wide">{k.label}</p>
+                  <p class={`font-bold text-${k.color}-600 text-sm mt-1`}>{k.val}</p>
+                  <p class={`text-[10px] text-${k.color}-500 mt-0.5`}>{k.up}</p>
+                </div>
+              ))}
+            </div>
+            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm text-center py-8">
+              <p class="text-slate-400 text-sm">📈 Gráfico interactivo disponible en la demo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center mt-8">
+        <a
+          href="/innovaconta/dashboard"
+          class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 shadow-xl shadow-indigo-600/30 hover:-translate-y-0.5 text-lg"
+        >
+          🚀 Explorar Demo Completa
+          <span>→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TESTIMONIOS ── -->
+  <section id="testimonios" class="py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center mb-16">
+        <p class="text-indigo-400 font-medium text-sm uppercase tracking-widest mb-3">Testimonios</p>
+        <h2 class="text-4xl font-bold text-white mb-4">Lo que dicen nuestros clientes</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        {[
+          {
+            name: 'María González',
+            role: 'Contadora General',
+            company: 'Ferretería Central SpA',
+            avatar: 'MG',
+            color: 'indigo',
+            quote: 'InnovaBot me ha ahorrado horas explicando conceptos a mis clientes. La IA entiende perfectamente el contexto tributario chileno y los asientos se generan solos.',
+          },
+          {
+            name: 'Carlos Ramírez',
+            role: 'Gerente de Finanzas',
+            company: 'Importadora del Sur Ltda.',
+            avatar: 'CR',
+            color: 'emerald',
+            quote: 'La conciliación bancaria automática es un game changer. Lo que antes nos tomaba 3 días ahora se hace en minutos. El dashboard en tiempo real es increíble.',
+          },
+          {
+            name: 'Valentina Torres',
+            role: 'Dueña y Contadora',
+            company: 'Clínica Dental Sonrisa',
+            avatar: 'VT',
+            color: 'violet',
+            quote: 'Antes del SII me angustiaba el F29 mensual. Ahora Innovaconta me avisa con anticipación, calcula el IVA automáticamente y hasta me explica cómo declarar paso a paso.',
+          },
+        ].map(t => (
+          <div class="bg-slate-900 border border-slate-700/50 rounded-2xl p-6 flex flex-col gap-4">
+            <div class="flex gap-1 text-amber-400 text-sm">
+              {'★★★★★'.split('').map(s => <span>{s}</span>)}
+            </div>
+            <p class="text-slate-300 text-sm leading-relaxed flex-1 italic">"{t.quote}"</p>
+            <div class="flex items-center gap-3 pt-2 border-t border-slate-700/50">
+              <div class={`w-10 h-10 rounded-full bg-${t.color}-600 flex items-center justify-center text-white font-bold text-xs`}>
+                {t.avatar}
+              </div>
+              <div>
+                <p class="font-semibold text-white text-sm">{t.name}</p>
+                <p class="text-slate-400 text-xs">{t.role} · {t.company}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="py-24 bg-gradient-to-br from-indigo-950 via-slate-900 to-violet-950">
+    <div class="max-w-3xl mx-auto px-6 text-center">
+      <h2 class="text-5xl font-extrabold text-white mb-6">
+        Tu contabilidad, <span class="gradient-text">reinventada</span>
+      </h2>
+      <p class="text-slate-400 text-lg mb-10 max-w-xl mx-auto">
+        Descubre cómo la inteligencia artificial puede transformar la gestión financiera de tu empresa. Prueba la demo ahora, sin registros.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/innovaconta/dashboard"
+          class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl transition-all duration-200 shadow-xl shadow-indigo-600/30 hover:-translate-y-0.5 text-lg"
+        >
+          🚀 Ver Demo Ahora
+        </a>
+        <a
+          href="#features"
+          class="bg-slate-800 hover:bg-slate-700 text-white font-bold px-8 py-4 rounded-xl border border-slate-600 transition-all duration-200 text-lg"
+        >
+          📖 Ver características
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer class="bg-slate-950 border-t border-slate-800/60 py-12">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between gap-8">
+        <div class="max-w-sm">
+          <div class="flex items-center gap-2 font-bold text-xl mb-3">
+            <span>💼</span>
+            <span class="gradient-text">Innovaconta</span>
+          </div>
+          <p class="text-slate-400 text-sm leading-relaxed">
+            Plataforma de contabilidad asistida por IA, diseñada para el Chile moderno. Compatible con SII, IFRS y normativa tributaria vigente.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-8 text-sm">
+          <div>
+            <p class="font-semibold text-white mb-3">Producto</p>
+            <div class="flex flex-col gap-2 text-slate-400">
+              <a href="#features" class="hover:text-white transition-colors">Características</a>
+              <a href="/innovaconta/dashboard" class="hover:text-white transition-colors">Demo</a>
+              <a href="#como-funciona" class="hover:text-white transition-colors">Cómo funciona</a>
+            </div>
+          </div>
+          <div>
+            <p class="font-semibold text-white mb-3">Módulos</p>
+            <div class="flex flex-col gap-2 text-slate-400">
+              <span>Dashboard</span>
+              <span>Facturas DTE</span>
+              <span>Libro Mayor</span>
+              <span>Balance General</span>
+              <span>Asientos</span>
+              <span>Informes</span>
+            </div>
+          </div>
+          <div>
+            <p class="font-semibold text-white mb-3">Tecnologías</p>
+            <div class="flex flex-col gap-2 text-slate-400">
+              <span>Astro</span>
+              <span>Tailwind CSS</span>
+              <span>Chart.js</span>
+              <span>IA Generativa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-slate-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
+        <p>© 2026 Innovaconta · Proyecto de Título — Ingeniería en Contabilidad</p>
+        <p>Hecho con ❤️ y mucha IA</p>
+      </div>
+    </div>
+  </footer>
+
+  <InnovaBot />
+</Layout>

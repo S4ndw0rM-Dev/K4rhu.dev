@@ -1,0 +1,1266 @@
+---
+import '../styles/global.css';
+import InnovaBot from '../components/InnovaBot.astro';
+---
+
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/innovaconta/favicon.svg" />
+  <title>Dashboard | Innovaconta</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-slate-50 font-[Inter,system-ui,sans-serif] text-slate-800">
+
+<!-- ── LAYOUT ── -->
+<div class="flex h-screen overflow-hidden">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="w-64 bg-[#1e293b] flex flex-col flex-shrink-0 shadow-2xl">
+    <!-- Logo -->
+    <div class="px-5 py-5 border-b border-slate-700/50">
+      <a href="/innovaconta/" class="flex items-center gap-2.5">
+        <span class="text-2xl">💼</span>
+        <span class="font-bold text-lg text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-violet-400 to-emerald-400">
+          Innovaconta
+        </span>
+      </a>
+      <p class="text-xs text-slate-400 mt-1 pl-9">Comercial El Sol SpA</p>
+    </div>
+
+    <!-- Empresa info -->
+    <div class="mx-4 my-4 bg-slate-800/60 rounded-xl px-4 py-3 border border-slate-700/40">
+      <p class="text-[10px] text-slate-400 uppercase tracking-widest mb-1">Período activo</p>
+      <p class="text-sm font-semibold text-white">Ene — May 2026</p>
+      <p class="text-[10px] text-emerald-400 mt-1">● 3 meses de datos cargados</p>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 space-y-1 overflow-y-auto">
+      {[
+        { id: 'dashboard', icon: '📊', label: 'Dashboard' },
+        { id: 'facturas',  icon: '🧾', label: 'Facturas' },
+        { id: 'libro',     icon: '📚', label: 'Libro Mayor' },
+        { id: 'balance',   icon: '⚖️', label: 'Balance General' },
+        { id: 'asientos',  icon: '📝', label: 'Asientos Contables' },
+        { id: 'informes',  icon: '📈', label: 'Informes' },
+      ].map(item => (
+        <button
+          data-module={item.id}
+          class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-400 hover:text-white hover:bg-slate-700/60 transition-all duration-150 text-left"
+        >
+          <span class="text-base w-5 text-center">{item.icon}</span>
+          <span class="font-medium">{item.label}</span>
+        </button>
+      ))}
+    </nav>
+
+    <!-- Footer sidebar -->
+    <div class="px-4 py-4 border-t border-slate-700/50">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">CU</div>
+        <div>
+          <p class="text-xs font-medium text-white">Contador Usuario</p>
+          <p class="text-[10px] text-slate-400">Administrador</p>
+        </div>
+        <span class="ml-auto w-2 h-2 bg-emerald-400 rounded-full"></span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <div class="flex-1 flex flex-col overflow-hidden">
+
+    <!-- TOPBAR -->
+    <header class="bg-white border-b border-slate-200 px-6 py-3.5 flex items-center justify-between flex-shrink-0 shadow-sm">
+      <div>
+        <h1 id="page-title" class="font-bold text-slate-800 text-lg">Dashboard</h1>
+        <p id="page-sub" class="text-xs text-slate-400">Resumen financiero · Mayo 2026</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full font-medium">
+          ✅ SII al día
+        </span>
+        <span class="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-full font-medium">
+          ⏰ F29 vence 12/06
+        </span>
+        <button
+          id="open-innovabot"
+          class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-medium px-3.5 py-2 rounded-xl transition-colors"
+          onclick="document.getElementById('cb-toggle').click()"
+        >
+          🤖 InnovaBot
+        </button>
+      </div>
+    </header>
+
+    <!-- MÓDULOS -->
+    <main class="flex-1 overflow-y-auto p-6 space-y-6">
+
+      <!-- ═══ MÓDULO: DASHBOARD ═══ -->
+      <div id="mod-dashboard" class="module-content space-y-6">
+        <!-- KPIs -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+          {[
+            { icon: '💹', label: 'Ingresos del Mes', val: '$3.200.000', sub: '▲ +8.5% vs abril', subColor: 'text-emerald-600', bg: 'bg-emerald-50 border-emerald-200' },
+            { icon: '💸', label: 'Gastos del Mes',   val: '$2.480.000', sub: '▲ +3.1% vs abril', subColor: 'text-rose-500',    bg: 'bg-rose-50 border-rose-200' },
+            { icon: '🎯', label: 'Utilidad Neta',    val: '$493.000',   sub: 'Margen: 15.4%',    subColor: 'text-indigo-600',  bg: 'bg-indigo-50 border-indigo-200' },
+            { icon: '⚠️', label: 'Doc. Pendientes', val: '3 facturas',  sub: '$3.340.000 por cobrar', subColor: 'text-amber-600', bg: 'bg-amber-50 border-amber-200' },
+          ].map(k => (
+            <div class={`bg-white rounded-2xl p-5 border shadow-sm`}>
+              <div class="flex items-start justify-between mb-3">
+                <p class="text-sm text-slate-500 font-medium">{k.label}</p>
+                <span class="text-2xl">{k.icon}</span>
+              </div>
+              <p class="text-2xl font-bold text-slate-800">{k.val}</p>
+              <p class={`text-xs mt-1 ${k.subColor} font-medium`}>{k.sub}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Gráfico + Transacciones recientes -->
+        <div class="grid lg:grid-cols-3 gap-5">
+          <!-- Gráfico -->
+          <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h3 class="font-bold text-slate-800">Ingresos vs Gastos</h3>
+                <p class="text-xs text-slate-400">Enero — Mayo 2026 (en miles de pesos)</p>
+              </div>
+              <div class="flex gap-3 text-xs">
+                <span class="flex items-center gap-1.5 text-slate-500"><span class="w-3 h-3 rounded bg-indigo-500 inline-block"></span>Ingresos</span>
+                <span class="flex items-center gap-1.5 text-slate-500"><span class="w-3 h-3 rounded bg-rose-400 inline-block"></span>Gastos</span>
+              </div>
+            </div>
+            <canvas id="chart-main" height="200"></canvas>
+          </div>
+
+          <!-- Últimas transacciones -->
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+            <h3 class="font-bold text-slate-800 mb-4">Últimas Transacciones</h3>
+            <div class="space-y-3">
+              {[
+                { desc: 'Venta — Clínica Vida',       monto: '+$689.200', color: 'text-emerald-600', date: '28/05', icon: '↗' },
+                { desc: 'Pago — Importadora Asia',     monto: '-$450.000', color: 'text-rose-500',    date: '26/05', icon: '↙' },
+                { desc: 'Boletas del día',             monto: '+$125.000', color: 'text-emerald-600', date: '25/05', icon: '↗' },
+                { desc: 'Servicio agua/luz',           monto: '-$85.000',  color: 'text-rose-500',    date: '23/05', icon: '↙' },
+                { desc: 'Venta — Empresa ABC Ltda.',   monto: '+$357.000', color: 'text-emerald-600', date: '20/05', icon: '↗' },
+              ].map(tx => (
+                <div class="flex items-center gap-3">
+                  <span class={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${tx.icon === '↗' ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-500'}`}>{tx.icon}</span>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-xs font-medium text-slate-700 truncate">{tx.desc}</p>
+                    <p class="text-[10px] text-slate-400">{tx.date} / 2026</p>
+                  </div>
+                  <span class={`text-xs font-bold ${tx.color}`}>{tx.monto}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Estado rápido -->
+        <div class="grid grid-cols-3 gap-5">
+          {[
+            { label: 'Liquidez Corriente', val: '4.70', desc: 'Activo Cte / Pasivo Cte · ideal > 1.5', color: 'indigo', icon: '💧' },
+            { label: 'Razón de Deuda',     val: '0.42', desc: 'Pasivo / Activo · ideal < 0.50',        color: 'emerald', icon: '⚖️' },
+            { label: 'Margen Neto',        val: '15.4%', desc: 'Utilidad Neta / Ventas',               color: 'violet', icon: '📊' },
+          ].map(r => (
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+              <div class="flex items-center gap-2 mb-2">
+                <span class="text-xl">{r.icon}</span>
+                <p class="text-sm text-slate-500">{r.label}</p>
+              </div>
+              <p class={`text-3xl font-extrabold text-${r.color}-600`}>{r.val}</p>
+              <p class="text-[10px] text-slate-400 mt-1">{r.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- ═══ MÓDULO: FACTURAS ═══ -->
+      <div id="mod-facturas" class="module-content hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-slate-800 text-xl">Gestión de Facturas</h2>
+            <p class="text-sm text-slate-400">Período: Enero — Mayo 2026</p>
+          </div>
+          <button
+            id="btn-nueva-factura"
+            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm shadow-lg shadow-indigo-600/20"
+          >
+            ＋ Nueva Factura
+          </button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="flex gap-2 text-sm">
+          {['Todas', 'Pagadas', 'Pendientes', 'Vencidas'].map((f, i) => (
+            <button
+              data-filter={f.toLowerCase()}
+              class={`filter-btn px-4 py-2 rounded-xl font-medium transition-all ${i === 0 ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-500 hover:border-indigo-400 hover:text-indigo-600'}`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+
+        <!-- Tabla -->
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200">
+              <tr class="text-left">
+                <th class="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">N° Folio</th>
+                <th class="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Cliente / Proveedor</th>
+                <th class="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Tipo</th>
+                <th class="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Monto Total</th>
+                <th class="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Fecha</th>
+                <th class="px-5 py-3.5 font-semibold text-slate-600 text-xs uppercase tracking-wide">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="facturas-tbody">
+              {[
+                { folio: 'F-0121', quien: 'Supermercado XYZ Ltda.', tipo: 'Venta',  monto: '$1.011.500', fecha: '15/01/2026', estado: 'Pagada' },
+                { folio: 'F-0122', quien: 'Distribuidora Sur SpA',   tipo: 'Venta',  monto: '$619.800',   fecha: '22/01/2026', estado: 'Pagada' },
+                { folio: 'F-0123', quien: 'Comercial Norte S.A.',    tipo: 'Venta',  monto: '$1.428.000', fecha: '05/02/2026', estado: 'Pagada' },
+                { folio: 'F-0124', quien: 'TechStore Chile Ltda.',   tipo: 'Venta',  monto: '$809.200',   fecha: '18/02/2026', estado: 'Pagada' },
+                { folio: 'F-0125', quien: 'Restaurant El Cielo SpA', tipo: 'Venta',  monto: '$511.700',   fecha: '01/03/2026', estado: 'Pagada' },
+                { folio: 'F-0126', quien: 'Consultora Digital SpA',  tipo: 'Venta',  monto: '$1.130.500', fecha: '15/03/2026', estado: 'Pendiente' },
+                { folio: 'C-0089', quien: 'Ferretería Central',      tipo: 'Compra', monto: '$857.680',   fecha: '28/03/2026', estado: 'Vencida' },
+                { folio: 'C-0090', quien: 'Importadora Asia Ltda.',  tipo: 'Compra', monto: '$1.725.500', fecha: '10/04/2026', estado: 'Pendiente' },
+                { folio: 'F-0127', quien: 'Clínica Vida SpA',        tipo: 'Venta',  monto: '$690.420',   fecha: '20/04/2026', estado: 'Pagada' },
+                { folio: 'F-0128', quien: 'Hotel Pacífico Ltda.',    tipo: 'Venta',  monto: '$1.059.100', fecha: '05/05/2026', estado: 'Pendiente' },
+              ].map(f => (
+                <tr class="factura-row border-b border-slate-100 hover:bg-slate-50 transition-colors" data-estado={f.estado.toLowerCase()}>
+                  <td class="px-5 py-3.5 font-mono text-xs text-indigo-600 font-semibold">{f.folio}</td>
+                  <td class="px-5 py-3.5 font-medium text-slate-700">{f.quien}</td>
+                  <td class="px-5 py-3.5">
+                    <span class={`text-xs px-2.5 py-1 rounded-full font-medium ${f.tipo === 'Venta' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700'}`}>
+                      {f.tipo}
+                    </span>
+                  </td>
+                  <td class="px-5 py-3.5 font-semibold text-slate-800">{f.monto}</td>
+                  <td class="px-5 py-3.5 text-slate-500 text-xs">{f.fecha}</td>
+                  <td class="px-5 py-3.5">
+                    <span class={`text-xs px-2.5 py-1.5 rounded-full font-semibold ${f.estado === 'Pagada' ? 'bg-emerald-100 text-emerald-700' : f.estado === 'Pendiente' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700'}`}>
+                      {f.estado === 'Pagada' ? '✅' : f.estado === 'Pendiente' ? '⏳' : '🔴'} {f.estado}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal nueva factura -->
+      <div id="modal-factura" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 animate-bounce-in">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="font-bold text-slate-800 text-lg">Nueva Factura</h3>
+            <button id="close-modal" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+          </div>
+          <form id="form-factura" class="space-y-4">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-semibold text-slate-600 block mb-1.5">Tipo de documento</label>
+                <select class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500">
+                  <option>Factura Afecta</option>
+                  <option>Factura Exenta</option>
+                  <option>Boleta</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-600 block mb-1.5">Tipo de operación</label>
+                <select class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500">
+                  <option>Venta</option>
+                  <option>Compra</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-600 block mb-1.5">RUT Emisor / Receptor</label>
+              <input type="text" placeholder="Ej: 76.123.456-7" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-600 block mb-1.5">Razón Social</label>
+              <input type="text" placeholder="Nombre de la empresa" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="text-xs font-semibold text-slate-600 block mb-1.5">N° Folio</label>
+                <input type="text" placeholder="F-0129" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-600 block mb-1.5">Fecha emisión</label>
+                <input type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-600 block mb-1.5">Monto Neto ($)</label>
+              <input id="monto-neto" type="number" placeholder="100000" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+            </div>
+            <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-sm">
+              <div class="flex justify-between text-slate-600">
+                <span>Monto Neto:</span><span id="calc-neto">$0</span>
+              </div>
+              <div class="flex justify-between text-slate-600 mt-1">
+                <span>IVA (19%):</span><span id="calc-iva" class="text-indigo-600">$0</span>
+              </div>
+              <div class="flex justify-between font-bold text-slate-800 mt-1 pt-1 border-t border-indigo-200">
+                <span>Total:</span><span id="calc-total" class="text-indigo-700">$0</span>
+              </div>
+            </div>
+            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition-colors">
+              ✅ Guardar Factura
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- ═══ MÓDULO: LIBRO MAYOR ═══ -->
+      <div id="mod-libro" class="module-content hidden space-y-5">
+        <div>
+          <h2 class="font-bold text-slate-800 text-xl">Libro Mayor</h2>
+          <p class="text-sm text-slate-400">Movimientos por cuenta contable · Mayo 2026</p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <label class="text-sm font-medium text-slate-600">Seleccionar cuenta:</label>
+          <select id="cuenta-selector" class="border border-slate-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-indigo-500 bg-white shadow-sm">
+            <option value="caja">1101 — Caja</option>
+            <option value="banco">1102 — Banco BCI</option>
+            <option value="cxc">1103 — Cuentas por Cobrar</option>
+            <option value="inventario">1104 — Inventario</option>
+            <option value="cxp">2101 — Cuentas por Pagar</option>
+            <option value="iva_debito">2102 — IVA Débito Fiscal</option>
+            <option value="ventas">4101 — Ingresos por Ventas</option>
+            <option value="gasto_rem">5201 — Gasto en Remuneraciones</option>
+          </select>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="px-5 py-4 border-b border-slate-200 flex justify-between items-center">
+            <div>
+              <h3 id="cuenta-nombre" class="font-bold text-slate-800">1101 — Caja</h3>
+              <p class="text-xs text-slate-400">Activo Corriente</p>
+            </div>
+            <div id="cuenta-saldo" class="text-right">
+              <p class="text-xs text-slate-400">Saldo actual</p>
+              <p class="font-bold text-emerald-600 text-lg">$1.250.000</p>
+            </div>
+          </div>
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-b border-slate-200">
+              <tr class="text-left">
+                <th class="px-5 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">Fecha</th>
+                <th class="px-5 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide">Descripción</th>
+                <th class="px-5 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide text-right">Debe</th>
+                <th class="px-5 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide text-right">Haber</th>
+                <th class="px-5 py-3 font-semibold text-slate-600 text-xs uppercase tracking-wide text-right">Saldo</th>
+              </tr>
+            </thead>
+            <tbody id="mayor-tbody">
+              <!-- Se llena con JS -->
+            </tbody>
+            <tfoot class="bg-slate-50 border-t border-slate-200">
+              <tr>
+                <td colspan="2" class="px-5 py-3 font-semibold text-slate-700 text-sm">TOTALES</td>
+                <td id="total-debe" class="px-5 py-3 font-bold text-emerald-600 text-right text-sm"></td>
+                <td id="total-haber" class="px-5 py-3 font-bold text-rose-500 text-right text-sm"></td>
+                <td id="saldo-final" class="px-5 py-3 font-bold text-indigo-600 text-right text-sm"></td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- ═══ MÓDULO: BALANCE GENERAL ═══ -->
+      <div id="mod-balance" class="module-content hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-slate-800 text-xl">Balance General</h2>
+            <p class="text-sm text-slate-400">Estado de Situación Financiera al 31 de Mayo de 2026</p>
+          </div>
+          <span class="bg-emerald-100 text-emerald-700 border border-emerald-200 px-3 py-1.5 rounded-full text-xs font-semibold">
+            ✅ Cuadrado
+          </span>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-5">
+          <!-- ACTIVOS -->
+          <div class="lg:col-span-2 space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="bg-blue-600 px-5 py-3">
+                <h3 class="font-bold text-white">🔵 ACTIVOS</h3>
+              </div>
+              <div class="p-5 space-y-4">
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Activos Corrientes</p>
+                  {[
+                    { cuenta: 'Caja',                 monto: '$1.250.000' },
+                    { cuenta: 'Banco BCI',             monto: '$8.520.000' },
+                    { cuenta: 'Cuentas por Cobrar',   monto: '$3.340.000' },
+                    { cuenta: 'Inventario',            monto: '$2.180.000' },
+                  ].map(a => (
+                    <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm">
+                      <span class="text-slate-600">{a.cuenta}</span>
+                      <span class="font-medium text-slate-800">{a.monto}</span>
+                    </div>
+                  ))}
+                  <div class="flex justify-between pt-2 font-bold text-blue-700">
+                    <span>Total Activo Corriente</span>
+                    <span>$15.290.000</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Activos No Corrientes</p>
+                  {[
+                    { cuenta: 'PP&E (neto depreciación)', monto: '$4.500.000' },
+                  ].map(a => (
+                    <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm">
+                      <span class="text-slate-600">{a.cuenta}</span>
+                      <span class="font-medium text-slate-800">{a.monto}</span>
+                    </div>
+                  ))}
+                  <div class="flex justify-between pt-2 font-bold text-blue-700">
+                    <span>Total Activo No Corriente</span>
+                    <span>$4.500.000</span>
+                  </div>
+                </div>
+                <div class="bg-blue-600 rounded-xl px-4 py-3 flex justify-between text-white font-extrabold text-base">
+                  <span>TOTAL ACTIVOS</span>
+                  <span>$19.790.000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- PASIVOS + PATRIMONIO -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="bg-rose-600 px-5 py-3">
+                <h3 class="font-bold text-white">🔴 PASIVOS</h3>
+              </div>
+              <div class="p-5 space-y-4">
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pasivos Corrientes</p>
+                  {[
+                    { cuenta: 'Cuentas por Pagar',       monto: '$2.150.000' },
+                    { cuenta: 'IVA por Pagar (neto)',     monto: '$420.000' },
+                    { cuenta: 'Remuneraciones por Pagar', monto: '$680.000' },
+                  ].map(a => (
+                    <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm">
+                      <span class="text-slate-600">{a.cuenta}</span>
+                      <span class="font-medium text-slate-800">{a.monto}</span>
+                    </div>
+                  ))}
+                  <div class="flex justify-between pt-2 font-bold text-rose-600">
+                    <span>Total Pasivo Corriente</span>
+                    <span>$3.250.000</span>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Pasivos No Corrientes</p>
+                  {[
+                    { cuenta: 'Préstamo Banco (LP)', monto: '$5.000.000' },
+                  ].map(a => (
+                    <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm">
+                      <span class="text-slate-600">{a.cuenta}</span>
+                      <span class="font-medium text-slate-800">{a.monto}</span>
+                    </div>
+                  ))}
+                  <div class="flex justify-between pt-2 font-bold text-rose-600">
+                    <span>Total Pasivo No Corriente</span>
+                    <span>$5.000.000</span>
+                  </div>
+                </div>
+                <div class="bg-rose-600 rounded-xl px-4 py-2.5 flex justify-between text-white font-bold">
+                  <span>TOTAL PASIVOS</span>
+                  <span>$8.250.000</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="bg-emerald-600 px-5 py-3">
+                <h3 class="font-bold text-white">🟢 PATRIMONIO NETO</h3>
+              </div>
+              <div class="p-5 space-y-2">
+                {[
+                  { cuenta: 'Capital Pagado',           monto: '$8.000.000' },
+                  { cuenta: 'Utilidades Retenidas',     monto: '$2.040.000' },
+                  { cuenta: 'Resultado del Ejercicio',  monto: '$1.500.000' },
+                ].map(a => (
+                  <div class="flex justify-between py-1.5 border-b border-slate-100 text-sm">
+                    <span class="text-slate-600">{a.cuenta}</span>
+                    <span class="font-medium text-slate-800">{a.monto}</span>
+                  </div>
+                ))}
+                <div class="bg-emerald-600 rounded-xl px-4 py-2.5 flex justify-between text-white font-bold mt-2">
+                  <span>TOTAL PATRIMONIO</span>
+                  <span>$11.540.000</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ecuación final -->
+            <div class="bg-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between text-white">
+              <div class="text-sm">
+                <p class="text-slate-400 text-xs mb-1">Verificación · Ecuación fundamental</p>
+                <p class="font-bold">Activo = Pasivo + Patrimonio</p>
+              </div>
+              <div class="text-right">
+                <p class="text-emerald-400 font-mono text-lg font-bold">$19.790.000 = $19.790.000</p>
+                <p class="text-emerald-400 text-xs">✅ Balanceado</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de torta -->
+          <div class="space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+              <h3 class="font-bold text-slate-800 mb-4 text-sm">Composición del Balance</h3>
+              <canvas id="chart-balance" height="200"></canvas>
+              <div class="space-y-2 mt-4">
+                {[
+                  { label: 'Activos Corrientes',  pct: '77%', color: 'bg-blue-500' },
+                  { label: 'Activos NC',          pct: '23%', color: 'bg-blue-300' },
+                  { label: 'Pasivos',             pct: '42%', color: 'bg-rose-500' },
+                  { label: 'Patrimonio',          pct: '58%', color: 'bg-emerald-500' },
+                ].map(l => (
+                  <div class="flex items-center gap-2 text-xs">
+                    <span class={`w-2.5 h-2.5 rounded-sm ${l.color}`}></span>
+                    <span class="text-slate-600 flex-1">{l.label}</span>
+                    <span class="font-semibold text-slate-800">{l.pct}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Ratios del balance -->
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+              <h3 class="font-bold text-slate-800 mb-4 text-sm">Ratios del Balance</h3>
+              <div class="space-y-3">
+                {[
+                  { label: 'Liquidez Corriente', val: '4.70', estado: '✅ Excelente', color: 'text-emerald-600' },
+                  { label: 'Prueba Ácida',       val: '4.03', estado: '✅ Excelente', color: 'text-emerald-600' },
+                  { label: 'Razón de Deuda',     val: '0.42', estado: '✅ Óptimo',    color: 'text-emerald-600' },
+                  { label: 'Apalancamiento',     val: '1.71', estado: '✅ Normal',     color: 'text-indigo-600' },
+                ].map(r => (
+                  <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                    <span class="text-xs text-slate-500">{r.label}</span>
+                    <div class="text-right">
+                      <p class={`font-bold text-sm ${r.color}`}>{r.val}</p>
+                      <p class="text-[10px] text-slate-400">{r.estado}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MÓDULO: ASIENTOS ═══ -->
+      <div id="mod-asientos" class="module-content hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-slate-800 text-xl">Asientos Contables</h2>
+            <p class="text-sm text-slate-400">Libro Diario · Mayo 2026</p>
+          </div>
+          <button
+            id="btn-nuevo-asiento"
+            class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm shadow-lg shadow-indigo-600/20"
+          >
+            ＋ Nuevo Asiento
+          </button>
+        </div>
+
+        <div class="space-y-4" id="asientos-list">
+          {[
+            {
+              num: '#0121', fecha: '01/05/2026', desc: 'Ventas del período — Contado',
+              lineas: [
+                { cuenta: '1101 Caja',           debe: '2.380.000', haber: '' },
+                { cuenta: '4101 Ventas',          debe: '',          haber: '2.000.000' },
+                { cuenta: '2102 IVA Débito Fisc.', debe: '',         haber: '380.000' },
+              ],
+              totalD: '$2.380.000', totalH: '$2.380.000', ok: true,
+            },
+            {
+              num: '#0122', fecha: '05/05/2026', desc: 'Pago remuneraciones del mes',
+              lineas: [
+                { cuenta: '5201 Gasto Remuneraciones', debe: '680.000', haber: '' },
+                { cuenta: '2101 Cuentas por Pagar',    debe: '',        haber: '680.000' },
+              ],
+              totalD: '$680.000', totalH: '$680.000', ok: true,
+            },
+            {
+              num: '#0123', fecha: '10/05/2026', desc: 'Compra inventario al crédito',
+              lineas: [
+                { cuenta: '1104 Inventario',          debe: '850.000',   haber: '' },
+                { cuenta: '2103 IVA Crédito Fiscal',  debe: '161.500',   haber: '' },
+                { cuenta: '2101 Cuentas por Pagar',   debe: '',          haber: '1.011.500' },
+              ],
+              totalD: '$1.011.500', totalH: '$1.011.500', ok: true,
+            },
+            {
+              num: '#0124', fecha: '15/05/2026', desc: 'Pago arriendo local comercial',
+              lineas: [
+                { cuenta: '5202 Gasto Arriendo', debe: '300.000', haber: '' },
+                { cuenta: '1102 Banco BCI',      debe: '',        haber: '300.000' },
+              ],
+              totalD: '$300.000', totalH: '$300.000', ok: true,
+            },
+            {
+              num: '#0125', fecha: '20/05/2026', desc: 'Venta al crédito — Hotel Pacífico',
+              lineas: [
+                { cuenta: '1103 Cuentas por Cobrar', debe: '1.059.100', haber: '' },
+                { cuenta: '4101 Ventas',              debe: '',          haber: '890.000' },
+                { cuenta: '2102 IVA Débito Fiscal',   debe: '',          haber: '169.100' },
+              ],
+              totalD: '$1.059.100', totalH: '$1.059.100', ok: true,
+            },
+            {
+              num: '#0126', fecha: '31/05/2026', desc: 'Depreciación mensual equipos',
+              lineas: [
+                { cuenta: '5205 Gasto Depreciación',    debe: '62.500', haber: '' },
+                { cuenta: '1202 Depreciación Acumulada', debe: '',      haber: '62.500' },
+              ],
+              totalD: '$62.500', totalH: '$62.500', ok: true,
+            },
+          ].map(a => (
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="flex items-center justify-between px-5 py-3 bg-slate-50 border-b border-slate-200">
+                <div class="flex items-center gap-3">
+                  <span class="font-mono text-indigo-600 font-bold text-sm">{a.num}</span>
+                  <span class="text-slate-400 text-xs">·</span>
+                  <span class="text-xs text-slate-500">{a.fecha}</span>
+                  <span class="text-slate-400 text-xs">·</span>
+                  <span class="text-sm font-medium text-slate-700">{a.desc}</span>
+                </div>
+                <span class="text-xs bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">
+                  ✅ Balanceado
+                </span>
+              </div>
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-xs text-slate-400 uppercase tracking-wide text-left">
+                    <th class="px-5 py-2.5 font-semibold">Cuenta</th>
+                    <th class="px-5 py-2.5 font-semibold text-right">Debe</th>
+                    <th class="px-5 py-2.5 font-semibold text-right">Haber</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {a.lineas.map(l => (
+                    <tr class="border-t border-slate-100">
+                      <td class="px-5 py-2 text-slate-700">{l.cuenta}</td>
+                      <td class="px-5 py-2 text-right font-mono text-emerald-600">{l.debe ? `$${l.debe}` : ''}</td>
+                      <td class="px-5 py-2 text-right font-mono text-rose-500">{l.haber ? `$${l.haber}` : ''}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot class="border-t-2 border-slate-200 bg-slate-50">
+                  <tr>
+                    <td class="px-5 py-2.5 font-bold text-slate-700 text-xs uppercase">TOTALES</td>
+                    <td class="px-5 py-2.5 text-right font-bold text-emerald-600">{a.totalD}</td>
+                    <td class="px-5 py-2.5 text-right font-bold text-rose-500">{a.totalH}</td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+          ))}
+        </div>
+
+        <!-- Modal nuevo asiento -->
+        <div id="modal-asiento" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 animate-bounce-in">
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="font-bold text-slate-800 text-lg">Nuevo Asiento Contable</h3>
+              <button id="close-modal-asiento" class="text-slate-400 hover:text-slate-600 text-xl font-bold">✕</button>
+            </div>
+            <div class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="text-xs font-semibold text-slate-600 block mb-1.5">N° Asiento</label>
+                  <input type="text" value="#0127" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" readonly />
+                </div>
+                <div>
+                  <label class="text-xs font-semibold text-slate-600 block mb-1.5">Fecha</label>
+                  <input type="date" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+                </div>
+              </div>
+              <div>
+                <label class="text-xs font-semibold text-slate-600 block mb-1.5">Descripción</label>
+                <input type="text" placeholder="Describe la operación contable" class="w-full border border-slate-300 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-indigo-500" />
+              </div>
+
+              <!-- Líneas del asiento -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label class="text-xs font-semibold text-slate-600">Líneas del asiento</label>
+                  <button id="add-linea" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium">+ Agregar línea</button>
+                </div>
+                <div id="lineas-asiento" class="space-y-2">
+                  <div class="grid grid-cols-3 gap-2 text-xs text-slate-500 font-medium px-1">
+                    <span>Cuenta</span><span class="text-center">Debe ($)</span><span class="text-center">Haber ($)</span>
+                  </div>
+                  <div class="linea-asiento grid grid-cols-3 gap-2">
+                    <input type="text" placeholder="1101 Caja" class="border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-500" />
+                    <input type="number" placeholder="0" class="debe-input border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-emerald-500 text-right" />
+                    <input type="number" placeholder="0" class="haber-input border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-rose-500 text-right" />
+                  </div>
+                  <div class="linea-asiento grid grid-cols-3 gap-2">
+                    <input type="text" placeholder="4101 Ventas" class="border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-500" />
+                    <input type="number" placeholder="0" class="debe-input border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-emerald-500 text-right" />
+                    <input type="number" placeholder="0" class="haber-input border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-rose-500 text-right" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Verificación en tiempo real -->
+              <div id="verificacion-asiento" class="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-600">Total Debe:</span>
+                  <span id="total-debe-new" class="font-bold text-emerald-600">$0</span>
+                </div>
+                <div class="flex justify-between text-sm mt-1">
+                  <span class="text-slate-600">Total Haber:</span>
+                  <span id="total-haber-new" class="font-bold text-rose-500">$0</span>
+                </div>
+                <div id="balance-check" class="mt-2 text-center text-xs font-medium text-slate-400 py-1">
+                  Ingresa los montos para verificar
+                </div>
+              </div>
+
+              <button id="guardar-asiento" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-xl transition-colors">
+                💾 Guardar Asiento
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ MÓDULO: INFORMES ═══ -->
+      <div id="mod-informes" class="module-content hidden space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-slate-800 text-xl">Informes Financieros</h2>
+            <p class="text-sm text-slate-400">Generados con IA · Período: Mayo 2026</p>
+          </div>
+          <button
+            class="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm"
+            onclick="alert('📄 Exportando informe PDF... (función simulada)')"
+          >
+            📥 Exportar PDF
+          </button>
+        </div>
+
+        <div class="grid lg:grid-cols-2 gap-5">
+          <!-- Estado de Resultados -->
+          <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="bg-indigo-600 px-5 py-3 flex items-center justify-between">
+              <h3 class="font-bold text-white">Estado de Resultados</h3>
+              <span class="text-xs text-indigo-200">Mayo 2026</span>
+            </div>
+            <div class="p-5 space-y-2 text-sm">
+              {[
+                { label: 'Ingresos por Ventas',      val: '$3.200.000', bold: false, positive: true },
+                { label: '(-) Costo de Ventas',      val: '($1.280.000)', bold: false, positive: false },
+                { label: '= Utilidad Bruta',         val: '$1.920.000', bold: true,  positive: true },
+                { label: '(-) Remuneraciones',       val: '($680.000)',  bold: false, positive: false },
+                { label: '(-) Arriendo',             val: '($300.000)',  bold: false, positive: false },
+                { label: '(-) Servicios y otros',    val: '($147.500)',  bold: false, positive: false },
+                { label: '(-) Depreciación',         val: '($62.500)',   bold: false, positive: false },
+                { label: '= Utilidad Operacional',   val: '$730.000',   bold: true,  positive: true },
+                { label: '(-) Gastos Financieros',   val: '($55.000)',   bold: false, positive: false },
+                { label: '= Utilidad Antes Imp.',    val: '$675.000',   bold: true,  positive: true },
+                { label: '(-) Impuesto Renta (27%)', val: '($182.250)',  bold: false, positive: false },
+                { label: '= UTILIDAD NETA',          val: '$492.750',   bold: true,  positive: true, big: true },
+              ].map(r => (
+                <div class={`flex justify-between py-1.5 ${r.big ? 'border-t-2 border-slate-300 mt-2 pt-3' : 'border-b border-slate-100'}`}>
+                  <span class={`${r.bold ? 'font-bold text-slate-800' : 'text-slate-600'} ${r.big ? 'text-base' : ''}`}>{r.label}</span>
+                  <span class={`font-${r.bold ? 'bold' : 'medium'} ${r.positive ? 'text-emerald-600' : 'text-rose-500'} ${r.big ? 'text-base' : ''}`}>{r.val}</span>
+                </div>
+              ))}
+              <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 mt-3">
+                <p class="text-xs text-indigo-700 font-medium">🤖 Análisis IA: Margen neto del 15.4% — Por encima del promedio del sector (12%). Se recomienda revisar los gastos de remuneraciones que representan el 21.3% de los ingresos.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ratios + Gráfico de tendencia -->
+          <div class="space-y-4">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div class="bg-violet-600 px-5 py-3">
+                <h3 class="font-bold text-white">Ratios Financieros</h3>
+              </div>
+              <div class="p-5 space-y-3">
+                {[
+                  { grupo: 'Liquidez',        items: [
+                    { label: 'Liquidez Corriente', val: '4.70', good: true, ref: 'Ref: > 1.5' },
+                    { label: 'Prueba Ácida',       val: '4.03', good: true, ref: 'Ref: > 1.0' },
+                  ]},
+                  { grupo: 'Endeudamiento',   items: [
+                    { label: 'Razón de Deuda',     val: '0.42', good: true, ref: 'Ref: < 0.5' },
+                    { label: 'Apalancamiento',     val: '1.71', good: true, ref: 'Ref: < 2.0' },
+                  ]},
+                  { grupo: 'Rentabilidad',    items: [
+                    { label: 'Margen Bruto',       val: '60.0%', good: true, ref: '' },
+                    { label: 'Margen Neto',        val: '15.4%', good: true, ref: '' },
+                    { label: 'ROE (anualizado)',   val: '12.8%', good: true, ref: '' },
+                  ]},
+                ].map(g => (
+                  <div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-2">{g.grupo}</p>
+                    <div class="space-y-1.5">
+                      {g.items.map(i => (
+                        <div class="flex items-center justify-between">
+                          <div>
+                            <p class="text-xs text-slate-600">{i.label}</p>
+                            {i.ref && <p class="text-[9px] text-slate-400">{i.ref}</p>}
+                          </div>
+                          <div class="flex items-center gap-2">
+                            <span class={`font-bold text-sm ${i.good ? 'text-emerald-600' : 'text-rose-500'}`}>{i.val}</span>
+                            <span class="text-xs">{i.good ? '✅' : '⚠️'}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5">
+              <h3 class="font-bold text-slate-800 mb-4 text-sm">Tendencia Utilidad Neta (Ene-May 2026)</h3>
+              <canvas id="chart-tendencia" height="140"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- InnovaBot -->
+<InnovaBot />
+
+<script is:inline>
+/* ═══ DATOS LIBRO MAYOR ═══ */
+const MOVIMIENTOS = {
+  caja: {
+    nombre: '1101 — Caja',
+    tipo: 'Activo Corriente',
+    saldo: '$1.250.000',
+    movs: [
+      { fecha: '01/05', desc: 'Saldo inicial',         debe: '980.000',   haber: '',          saldo: '980.000' },
+      { fecha: '02/05', desc: 'Venta contado',         debe: '595.000',   haber: '',          saldo: '1.575.000' },
+      { fecha: '05/05', desc: 'Pago servicios',        debe: '',          haber: '85.000',    saldo: '1.490.000' },
+      { fecha: '10/05', desc: 'Venta contado',         debe: '340.000',   haber: '',          saldo: '1.830.000' },
+      { fecha: '15/05', desc: 'Transferencia a banco', debe: '',          haber: '580.000',   saldo: '1.250.000' },
+    ],
+    totalD: '$1.915.000', totalH: '$665.000', saldoFinal: '$1.250.000',
+  },
+  banco: {
+    nombre: '1102 — Banco BCI',
+    tipo: 'Activo Corriente',
+    saldo: '$8.520.000',
+    movs: [
+      { fecha: '01/05', desc: 'Saldo inicial',              debe: '7.840.000', haber: '',          saldo: '7.840.000' },
+      { fecha: '10/05', desc: 'Transferencia desde caja',  debe: '580.000',   haber: '',          saldo: '8.420.000' },
+      { fecha: '15/05', desc: 'Pago arriendo',             debe: '',          haber: '300.000',   saldo: '8.120.000' },
+      { fecha: '20/05', desc: 'Cobro cliente ABC',         debe: '700.000',   haber: '',          saldo: '8.820.000' },
+      { fecha: '28/05', desc: 'Pago proveedor',            debe: '',          haber: '300.000',   saldo: '8.520.000' },
+    ],
+    totalD: '$9.120.000', totalH: '$600.000', saldoFinal: '$8.520.000',
+  },
+  cxc: {
+    nombre: '1103 — Cuentas por Cobrar',
+    tipo: 'Activo Corriente',
+    saldo: '$3.340.000',
+    movs: [
+      { fecha: '01/05', desc: 'Saldo inicial',            debe: '2.800.000', haber: '',          saldo: '2.800.000' },
+      { fecha: '05/05', desc: 'Venta a crédito — Hotel Pac.', debe: '1.059.100', haber: '',     saldo: '3.859.100' },
+      { fecha: '10/05', desc: 'Cobro Consultora Digital', debe: '',          haber: '250.000',   saldo: '3.609.100' },
+      { fecha: '20/05', desc: 'Cobro cliente ABC',        debe: '',          haber: '700.000',   saldo: '2.909.100' },
+      { fecha: '28/05', desc: 'Venta a crédito — Clínica', debe: '689.200', haber: '',          saldo: '3.598.300' },
+    ],
+    totalD: '$4.548.300', totalH: '$950.000', saldoFinal: '$3.598.300',
+  },
+  inventario: {
+    nombre: '1104 — Inventario',
+    tipo: 'Activo Corriente',
+    saldo: '$2.180.000',
+    movs: [
+      { fecha: '01/05', desc: 'Saldo inicial',        debe: '1.800.000', haber: '',          saldo: '1.800.000' },
+      { fecha: '10/05', desc: 'Compra inventario',    debe: '850.000',   haber: '',          saldo: '2.650.000' },
+      { fecha: '15/05', desc: 'Costo de ventas',      debe: '',          haber: '380.000',   saldo: '2.270.000' },
+      { fecha: '25/05', desc: 'Costo de ventas',      debe: '',          haber: '90.000',    saldo: '2.180.000' },
+    ],
+    totalD: '$2.650.000', totalH: '$470.000', saldoFinal: '$2.180.000',
+  },
+  cxp: {
+    nombre: '2101 — Cuentas por Pagar',
+    tipo: 'Pasivo Corriente',
+    saldo: '$2.150.000',
+    movs: [
+      { fecha: '01/05', desc: 'Saldo inicial',             debe: '',        haber: '1.500.000', saldo: '1.500.000' },
+      { fecha: '10/05', desc: 'Compra inventario',         debe: '',        haber: '1.011.500', saldo: '2.511.500' },
+      { fecha: '05/05', desc: 'Remuneraciones por pagar',  debe: '',        haber: '680.000',   saldo: '3.191.500' },
+      { fecha: '20/05', desc: 'Pago proveedor Sur',        debe: '600.000', haber: '',          saldo: '2.591.500' },
+      { fecha: '28/05', desc: 'Pago proveedor Asia',       debe: '441.500', haber: '',          saldo: '2.150.000' },
+    ],
+    totalD: '$1.041.500', totalH: '$3.191.500', saldoFinal: '$2.150.000',
+  },
+  iva_debito: {
+    nombre: '2102 — IVA Débito Fiscal',
+    tipo: 'Pasivo Corriente',
+    saldo: '$420.000',
+    movs: [
+      { fecha: '01/05', desc: 'Saldo inicial',            debe: '',        haber: '0',         saldo: '0' },
+      { fecha: '01/05', desc: 'IVA ventas al contado',    debe: '',        haber: '380.000',   saldo: '380.000' },
+      { fecha: '05/05', desc: 'IVA venta Hotel Pacífico', debe: '',        haber: '169.100',   saldo: '549.100' },
+      { fecha: '20/05', desc: 'IVA crédito compensación', debe: '129.100', haber: '',          saldo: '420.000' },
+    ],
+    totalD: '$129.100', totalH: '$549.100', saldoFinal: '$420.000',
+  },
+  ventas: {
+    nombre: '4101 — Ingresos por Ventas',
+    tipo: 'Ingreso',
+    saldo: '$3.200.000',
+    movs: [
+      { fecha: '01/05', desc: 'Ventas al contado',        debe: '', haber: '2.000.000', saldo: '2.000.000' },
+      { fecha: '05/05', desc: 'Venta Hotel Pacífico',     debe: '', haber: '890.000',   saldo: '2.890.000' },
+      { fecha: '20/05', desc: 'Venta Clínica Vida',       debe: '', haber: '580.000',   saldo: '3.470.000' },
+      { fecha: '25/05', desc: 'Ventas boletas del día',   debe: '', haber: '105.042',   saldo: '3.575.042' },
+    ],
+    totalD: '$0', totalH: '$3.575.042', saldoFinal: '$3.575.042',
+  },
+  gasto_rem: {
+    nombre: '5201 — Gasto en Remuneraciones',
+    tipo: 'Gasto',
+    saldo: '$680.000',
+    movs: [
+      { fecha: '05/05', desc: 'Remuneraciones mes mayo', debe: '680.000', haber: '', saldo: '680.000' },
+    ],
+    totalD: '$680.000', totalH: '$0', saldoFinal: '$680.000',
+  },
+};
+
+/* ═══ NAVEGACIÓN MÓDULOS ═══ */
+const navBtns = document.querySelectorAll('.nav-btn');
+const modules = document.querySelectorAll('.module-content');
+const pageTitle = document.getElementById('page-title');
+const pageSub   = document.getElementById('page-sub');
+
+const moduleMeta = {
+  dashboard: { title: 'Dashboard',           sub: 'Resumen financiero · Mayo 2026' },
+  facturas:  { title: 'Gestión de Facturas', sub: 'Período: Enero — Mayo 2026' },
+  libro:     { title: 'Libro Mayor',         sub: 'Movimientos por cuenta contable' },
+  balance:   { title: 'Balance General',     sub: 'Al 31 de Mayo de 2026' },
+  asientos:  { title: 'Asientos Contables',  sub: 'Libro Diario · Mayo 2026' },
+  informes:  { title: 'Informes Financieros', sub: 'Generados con IA' },
+};
+
+function activateModule(id) {
+  // Mostrar módulo
+  modules.forEach(m => m.classList.add('hidden'));
+  const mod = document.getElementById('mod-' + id);
+  if (mod) { mod.classList.remove('hidden'); mod.classList.add('animate-fade-up'); }
+
+  // Actualizar nav
+  navBtns.forEach(btn => {
+    const active = btn.dataset.module === id;
+    btn.classList.toggle('bg-indigo-600', active);
+    btn.classList.toggle('text-white', active);
+    btn.classList.toggle('text-slate-400', !active);
+  });
+
+  // Actualizar topbar
+  const meta = moduleMeta[id] || {};
+  if (pageTitle) pageTitle.textContent = meta.title || '';
+  if (pageSub) pageSub.textContent = meta.sub || '';
+
+  // Disparar evento para InnovaBot
+  window.dispatchEvent(new CustomEvent('innovabot:context', { detail: { section: id } }));
+
+  // Inicializar charts si corresponde
+  if (id === 'dashboard') initChartMain();
+  if (id === 'balance')   initChartBalance();
+  if (id === 'informes')  initChartTendencia();
+  if (id === 'libro')     renderMayor('caja');
+}
+
+navBtns.forEach(btn => {
+  btn.addEventListener('click', () => activateModule(btn.dataset.module));
+});
+
+// Activar dashboard al cargar
+activateModule('dashboard');
+
+/* ═══ CHARTS ═══ */
+let chartMainInst, chartBalanceInst, chartTendenciaInst;
+
+function initChartMain() {
+  const ctx = document.getElementById('chart-main');
+  if (!ctx || chartMainInst) return;
+  chartMainInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo'],
+      datasets: [
+        {
+          label: 'Ingresos',
+          data: [2850, 3120, 2980, 3450, 3200],
+          backgroundColor: 'rgba(99,102,241,0.8)',
+          borderRadius: 6,
+        },
+        {
+          label: 'Gastos',
+          data: [2100, 2280, 2350, 2620, 2480],
+          backgroundColor: 'rgba(251,113,133,0.75)',
+          borderRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } },
+        y: {
+          grid: { color: 'rgba(148,163,184,0.12)' },
+          ticks: { color: '#94a3b8', font: { size: 11 }, callback: v => '$' + (v/1000) + 'K' },
+        },
+      },
+    },
+  });
+}
+
+function initChartBalance() {
+  const ctx = document.getElementById('chart-balance');
+  if (!ctx || chartBalanceInst) return;
+  chartBalanceInst = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Activo Cte', 'Activo NC', 'Pasivos', 'Patrimonio'],
+      datasets: [{
+        data: [15290, 4500, 8250, 11540],
+        backgroundColor: ['#6366f1','#a5b4fc','#fb7185','#34d399'],
+        borderWidth: 0,
+        hoverOffset: 8,
+      }],
+    },
+    options: {
+      responsive: true,
+      cutout: '65%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ' $' + ctx.raw.toLocaleString('es-CL') + '.000' } },
+      },
+    },
+  });
+}
+
+function initChartTendencia() {
+  const ctx = document.getElementById('chart-tendencia');
+  if (!ctx || chartTendenciaInst) return;
+  chartTendenciaInst = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May'],
+      datasets: [{
+        label: 'Utilidad Neta ($K)',
+        data: [382, 415, 290, 428, 493],
+        borderColor: '#6366f1',
+        backgroundColor: 'rgba(99,102,241,0.1)',
+        tension: 0.4,
+        fill: true,
+        pointBackgroundColor: '#6366f1',
+        pointRadius: 5,
+      }],
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 11 } } },
+        y: { grid: { color: 'rgba(148,163,184,0.1)' }, ticks: { color: '#94a3b8', font: { size: 11 }, callback: v => '$' + v + 'K' } },
+      },
+    },
+  });
+}
+
+/* ═══ LIBRO MAYOR ═══ */
+function fmt(n) {
+  return n ? '$' + n.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '';
+}
+
+function renderMayor(cuentaId) {
+  const data = MOVIMIENTOS[cuentaId];
+  if (!data) return;
+
+  document.getElementById('cuenta-nombre').textContent = data.nombre;
+  document.getElementById('cuenta-saldo').querySelector('p:last-child').textContent = data.saldo;
+
+  const tbody = document.getElementById('mayor-tbody');
+  tbody.innerHTML = '';
+  data.movs.forEach(m => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-slate-100 hover:bg-slate-50 transition-colors';
+    tr.innerHTML = `
+      <td class="px-5 py-3 text-xs text-slate-400">${m.fecha}/05/2026</td>
+      <td class="px-5 py-3 text-sm text-slate-700">${m.desc}</td>
+      <td class="px-5 py-3 text-right font-mono text-emerald-600 text-sm">${m.debe ? '$' + m.debe : ''}</td>
+      <td class="px-5 py-3 text-right font-mono text-rose-500 text-sm">${m.haber ? '$' + m.haber : ''}</td>
+      <td class="px-5 py-3 text-right font-mono text-indigo-600 font-semibold text-sm">$${m.saldo}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('total-debe').textContent  = data.totalD;
+  document.getElementById('total-haber').textContent = data.totalH;
+  document.getElementById('saldo-final').textContent = data.saldoFinal;
+}
+
+document.getElementById('cuenta-selector').addEventListener('change', e => {
+  renderMayor(e.target.value);
+});
+
+/* ═══ FILTROS FACTURAS ═══ */
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.remove('bg-indigo-600', 'text-white');
+      b.classList.add('bg-white', 'border', 'border-slate-200', 'text-slate-500');
+    });
+    btn.classList.add('bg-indigo-600', 'text-white');
+    btn.classList.remove('bg-white', 'border', 'border-slate-200', 'text-slate-500');
+
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.factura-row').forEach(row => {
+      const estado = row.dataset.estado;
+      row.style.display = (f === 'todas' || estado === f) ? '' : 'none';
+    });
+  });
+});
+
+/* ═══ MODAL FACTURA ═══ */
+const modalFactura = document.getElementById('modal-factura');
+document.getElementById('btn-nueva-factura').addEventListener('click', () => {
+  modalFactura.classList.remove('hidden');
+});
+document.getElementById('close-modal').addEventListener('click', () => {
+  modalFactura.classList.add('hidden');
+});
+modalFactura.addEventListener('click', e => {
+  if (e.target === modalFactura) modalFactura.classList.add('hidden');
+});
+
+// Cálculo IVA en tiempo real
+document.getElementById('monto-neto').addEventListener('input', e => {
+  const neto  = parseFloat(e.target.value) || 0;
+  const iva   = Math.round(neto * 0.19);
+  const total = neto + iva;
+  const f = n => '$' + n.toLocaleString('es-CL');
+  document.getElementById('calc-neto').textContent  = f(neto);
+  document.getElementById('calc-iva').textContent   = f(iva);
+  document.getElementById('calc-total').textContent = f(total);
+});
+
+document.getElementById('form-factura').addEventListener('submit', e => {
+  e.preventDefault();
+  modalFactura.classList.add('hidden');
+
+  // Notificar a InnovaBot
+  window.dispatchEvent(new CustomEvent('innovabot:context', { detail: { section: 'facturas' } }));
+
+  // Feedback visual
+  const topbar = document.querySelector('header');
+  const msg = document.createElement('div');
+  msg.className = 'fixed top-4 right-4 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl z-50 text-sm font-medium animate-bounce-in';
+  msg.textContent = '✅ Factura guardada y asiento generado automáticamente';
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3500);
+});
+
+/* ═══ MODAL ASIENTO ═══ */
+const modalAsiento = document.getElementById('modal-asiento');
+document.getElementById('btn-nuevo-asiento').addEventListener('click', () => {
+  modalAsiento.classList.remove('hidden');
+});
+document.getElementById('close-modal-asiento').addEventListener('click', () => {
+  modalAsiento.classList.add('hidden');
+});
+modalAsiento.addEventListener('click', e => {
+  if (e.target === modalAsiento) modalAsiento.classList.add('hidden');
+});
+
+// Agregar línea de asiento
+document.getElementById('add-linea').addEventListener('click', () => {
+  const container = document.getElementById('lineas-asiento');
+  const div = document.createElement('div');
+  div.className = 'linea-asiento grid grid-cols-3 gap-2';
+  div.innerHTML = `
+    <input type="text" placeholder="Cuenta contable" class="border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-indigo-500" />
+    <input type="number" placeholder="0" class="debe-input border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-emerald-500 text-right" />
+    <input type="number" placeholder="0" class="haber-input border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:outline-none focus:border-rose-500 text-right" />
+  `;
+  container.appendChild(div);
+  attachLineaListeners(div);
+});
+
+function calcTotales() {
+  const debes  = [...document.querySelectorAll('.debe-input')].reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+  const habers = [...document.querySelectorAll('.haber-input')].reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+  const f = n => '$' + n.toLocaleString('es-CL');
+  document.getElementById('total-debe-new').textContent  = f(debes);
+  document.getElementById('total-haber-new').textContent = f(habers);
+
+  const check = document.getElementById('balance-check');
+  if (debes === 0 && habers === 0) {
+    check.textContent = 'Ingresa los montos para verificar';
+    check.className = 'mt-2 text-center text-xs font-medium text-slate-400 py-1';
+  } else if (Math.abs(debes - habers) < 1) {
+    check.textContent = '✅ Asiento balanceado — Debe = Haber';
+    check.className = 'mt-2 text-center text-xs font-bold text-emerald-600 bg-emerald-50 rounded-lg py-1';
+  } else {
+    check.textContent = `⚠️ Diferencia: $${Math.abs(debes - habers).toLocaleString('es-CL')} — Debe = Haber para guardar`;
+    check.className = 'mt-2 text-center text-xs font-bold text-rose-600 bg-rose-50 rounded-lg py-1';
+  }
+}
+
+function attachLineaListeners(parent) {
+  parent.querySelectorAll('input[type=number]').forEach(i => i.addEventListener('input', calcTotales));
+}
+
+document.querySelectorAll('.linea-asiento').forEach(attachLineaListeners);
+
+document.getElementById('guardar-asiento').addEventListener('click', () => {
+  const debes  = [...document.querySelectorAll('.debe-input')].reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+  const habers = [...document.querySelectorAll('.haber-input')].reduce((s, i) => s + (parseFloat(i.value) || 0), 0);
+
+  if (Math.abs(debes - habers) > 1) {
+    alert('⚠️ El asiento no está balanceado. Debe = Haber para poder guardar.');
+    return;
+  }
+  if (debes === 0) {
+    alert('⚠️ Ingresa los montos del asiento primero.');
+    return;
+  }
+
+  modalAsiento.classList.add('hidden');
+  const msg = document.createElement('div');
+  msg.className = 'fixed top-4 right-4 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-xl z-50 text-sm font-medium animate-bounce-in';
+  msg.textContent = '✅ Asiento #0127 guardado en el Libro Diario';
+  document.body.appendChild(msg);
+  setTimeout(() => msg.remove(), 3500);
+});
+</script>
+</body>
+</html>
