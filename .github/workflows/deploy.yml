@@ -30,8 +30,10 @@ jobs:
         working-directory: src/kote
         run: npm ci && npm run build
 
-      - name: Remove node_modules before upload
-        run: rm -rf src/kote/node_modules
+      - name: Copy dist to /innovaconta and clean node_modules
+        run: |
+          cp -r src/kote/dist innovaconta
+          rm -rf src/kote/node_modules
 
       - uses: actions/upload-pages-artifact@v3
         with:
